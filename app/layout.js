@@ -1,5 +1,6 @@
 import "./globals.css";
 import Script from "next/script";
+import PopupAds from "@/components/PopupAds";
 
 const siteUrl = "https://dragonballhdsinlimites.net";
 
@@ -91,6 +92,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
+        <PopupAds />
         {children}
       </body>
     </html>
