@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
     url: siteUrl,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteUrl}/?q={search_term_string}`,
+      target: `${siteUrl}/buscar/?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -76,7 +76,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4380860154184351"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <noscript>
           <iframe

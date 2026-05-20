@@ -33,7 +33,7 @@ export default function SiteHeader() {
                 }`}
               >
                 {item.label}
-                {item.children && <span aria-hidden="true">⌄</span>}
+                {item.children && <span aria-hidden="true">v</span>}
               </a>
               {item.children && (
                 <div className="invisible absolute left-0 top-full min-w-72 translate-y-2 rounded-md border border-white/10 bg-db-panel2 p-2 opacity-0 shadow-card transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
@@ -52,7 +52,7 @@ export default function SiteHeader() {
           ))}
         </nav>
 
-        <form action="/" className="ml-auto hidden min-w-72 max-w-sm flex-1 items-center md:flex">
+        <form action="/buscar/" className="ml-auto hidden min-w-72 max-w-sm flex-1 items-center md:flex">
           <label htmlFor="site-search" className="sr-only">
             Buscar episodios
           </label>
@@ -68,7 +68,7 @@ export default function SiteHeader() {
             className="focus-ring rounded-r-full bg-db-orange px-5 py-3 text-base font-black text-white transition hover:bg-db-gold hover:text-black"
             aria-label="Buscar"
           >
-            🔎
+            Buscar
           </button>
         </form>
       </div>

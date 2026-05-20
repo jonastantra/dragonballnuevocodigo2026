@@ -53,6 +53,9 @@ export default function PlayerTabs({ players, coverImage, title }) {
             <img
               src={coverImage}
               alt={title || "Portada"}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover opacity-50 transition duration-700 group-hover:scale-105 group-hover:opacity-60"
             />
           ) : (
@@ -80,7 +83,7 @@ export default function PlayerTabs({ players, coverImage, title }) {
             </div>
             
             <h3 className="text-lg font-black uppercase tracking-wider text-white sm:text-2xl drop-shadow-md">
-              Reproducir Capítulo
+              Reproducir Capitulo
             </h3>
             {title && (
               <p className="mt-1 max-w-md text-xs font-bold text-zinc-300 line-clamp-1 drop-shadow-sm sm:text-sm">
