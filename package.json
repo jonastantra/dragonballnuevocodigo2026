@@ -1,0 +1,25 @@
+{
+  "name": "dragon-ball-online-static",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "migrar": "node migrar.js",
+    "dev": "next dev",
+    "build": "npm run migrar && next build",
+    "preview": "node scripts/serve-static.js",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^3.4.17"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
+  }
+}

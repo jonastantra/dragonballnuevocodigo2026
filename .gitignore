@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+*.log
+.env*
+/uploads/
+uploads.zip
+Tema Dragon Ball/
+Entradas-Export-*.csv
