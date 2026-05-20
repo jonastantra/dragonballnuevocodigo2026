@@ -3,10 +3,11 @@ node_modules
 out
 *.log
 .env*
+.git
 .vercel
 /uploads/
 uploads.zip
 Tema Dragon Ball/
 Entradas-Export-*.csv
-
-.vercel
+static-preview.*.log
+next-dev.*.log
