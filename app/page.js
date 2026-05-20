@@ -66,6 +66,7 @@ export default function HomePage() {
 
   return (
     <main>
+      {featured[0]?.imagen && <link rel="preload" as="image" href={featured[0].imagen} fetchPriority="high" />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}

@@ -1,6 +1,6 @@
 import { episodeHref } from "@/lib/site";
 
-export default function CapituloGrid({ capitulos, eagerCount = 8 }) {
+export default function CapituloGrid({ capitulos, eagerCount = 1 }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
       {capitulos.map((capitulo, index) => (
@@ -8,6 +8,7 @@ export default function CapituloGrid({ capitulos, eagerCount = 8 }) {
           key={capitulo.slug}
           href={episodeHref(capitulo)}
           className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 transition duration-200 hover:-translate-y-1 hover:border-db-orange hover:shadow-glow"
+          style={index > 9 ? { contentVisibility: "auto", containIntrinsicSize: "260px 210px" } : undefined}
         >
           <div className="aspect-video bg-zinc-950">
             {capitulo.imagen ? (
@@ -15,6 +16,7 @@ export default function CapituloGrid({ capitulos, eagerCount = 8 }) {
                 src={capitulo.imagen}
                 alt={capitulo.titulo}
                 loading={index < eagerCount ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "auto"}
                 decoding="async"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />

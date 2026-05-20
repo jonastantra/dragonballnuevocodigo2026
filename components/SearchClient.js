@@ -91,13 +91,15 @@ export default function SearchClient() {
               key={capitulo.slug}
               href={capitulo.url || `/capitulo/${capitulo.slug}/`}
               className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 transition duration-200 hover:-translate-y-1 hover:border-db-orange hover:shadow-glow"
+              style={index > 9 ? { contentVisibility: "auto", containIntrinsicSize: "260px 210px" } : undefined}
             >
               <div className="aspect-video bg-zinc-950">
                 {capitulo.imagen ? (
                   <img
                     src={capitulo.imagen}
                     alt={capitulo.titulo}
-                    loading={index < 4 ? "eager" : "lazy"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                     decoding="async"
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />

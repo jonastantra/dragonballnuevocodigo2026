@@ -3,8 +3,11 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
 export default function CategoryView({ category, capitulos }) {
+  const firstImage = capitulos.find((capitulo) => capitulo.imagen)?.imagen;
+
   return (
     <main className="min-h-screen">
+      {firstImage && <link rel="preload" as="image" href={firstImage} fetchPriority="high" />}
       <SiteHeader />
       <section
         id="contenido"
@@ -30,7 +33,7 @@ export default function CategoryView({ category, capitulos }) {
             Inicio
           </a>
         </div>
-        <CapituloGrid capitulos={capitulos} />
+        <CapituloGrid capitulos={capitulos} eagerCount={1} />
       </section>
       <SiteFooter />
     </main>
