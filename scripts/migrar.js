@@ -329,6 +329,11 @@ function copyLocalUpload(relativePath) {
   const publicRoot = path.resolve(PUBLIC_UPLOADS_DIR);
 
   if (!source.startsWith(uploadsRoot) || !target.startsWith(publicRoot)) return "";
+
+  if (fs.existsSync(target)) {
+    return `/uploads/${cleanRelative.replace(/\\/g, "/")}`;
+  }
+
   if (!fs.existsSync(source)) return "";
 
   fs.mkdirSync(path.dirname(target), { recursive: true });
