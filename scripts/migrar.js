@@ -4,6 +4,7 @@ const path = require("path");
 const ROOT = process.cwd();
 const DEFAULT_OUTPUT = path.join(ROOT, "data", "capitulos.json");
 const LEGACY_INPUT = path.join(ROOT, "data", "legacy-permalinks.csv");
+const KNOWN_LEGACY_PAGES_INPUT = path.join(ROOT, "data", "known-legacy-pages.json");
 const WP_UPLOADS_DIR = findWpUploadsDir();
 const PUBLIC_UPLOADS_DIR = path.join(ROOT, "public", "uploads");
 
@@ -545,6 +546,10 @@ function migrate() {
       addUniquePath(aliases, legacy.path);
       addUniquePath(aliases, `/${category.categoriaSlug}/${slug}/`);
       addUniquePath(aliases, `/capitulo/${slug}/`);
+      addUniquePath(aliases, `/${slug}/`);
+      addUniquePath(aliases, `/${slug}/feed/`);
+      addUniquePath(aliases, id ? `/archivos/${id}/` : "");
+      addUniquePath(aliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
       addUniquePath(aliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
 
       return {
@@ -585,6 +590,21 @@ function migrate() {
       description: pick(record, ["excerpt"]) || "Pagina historica conservada durante la migracion estatica.",
       category: pick(record, ["categorias", "categorías"]) || "Blog",
     });
+  }
+
+  if (fs.existsSync(KNOWN_LEGACY_PAGES_INPUT)) {
+    const knownPages = JSON.parse(fs.readFileSync(KNOWN_LEGACY_PAGES_INPUT, "utf8"));
+    for (const page of knownPages) {
+      const pagePath = normalizePath(page.path);
+      if (!pagePath || legacyPagePaths.has(pagePath)) continue;
+      legacyPagePaths.add(pagePath);
+      legacyPages.push({
+        path: pagePath,
+        title: page.title || "Dragon Ball HD Sin Limites",
+        description: page.description || "Pagina historica conservada durante la migracion estatica.",
+        category: page.category || "Legacy",
+      });
+    }
   }
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

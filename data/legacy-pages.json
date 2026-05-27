@@ -16,5 +16,29 @@
     "title": "Dragon Ball HD Sin Limites",
     "description": "Pagina historica conservada durante la migracion estatica.",
     "category": "Dragon Ball"
+  },
+  {
+    "path": "/archivos/date/2025/08/",
+    "title": "Archivo agosto 2025",
+    "description": "Archivo historico de publicaciones de agosto de 2025.",
+    "category": "Archivo"
+  },
+  {
+    "path": "/archivos/date/2025/09/",
+    "title": "Archivo septiembre 2025",
+    "description": "Archivo historico de publicaciones de septiembre de 2025.",
+    "category": "Archivo"
+  },
+  {
+    "path": "/author/jonastantra/",
+    "title": "Jonastantra",
+    "description": "Archivo historico del autor Jonastantra.",
+    "category": "Autor"
+  },
+  {
+    "path": "/sobre-nosotros/",
+    "title": "Sobre nosotros",
+    "description": "Pagina historica de informacion del sitio.",
+    "category": "Pagina"
   }
 ]
