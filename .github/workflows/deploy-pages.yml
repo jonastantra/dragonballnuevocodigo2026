@@ -33,6 +33,8 @@ jobs:
 
       - name: Build static site
         run: npm run build
+        env:
+          GITHUB_PAGES: "true"
 
       - name: Prepare Pages artifact
         run: touch out/.nojekyll
