@@ -73,20 +73,25 @@ export default function SiteHeader() {
         </form>
       </div>
 
-      <nav
-        className="flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden"
-        aria-label="Menu principal movil"
-      >
-        {menuItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className="focus-ring shrink-0 rounded-md border border-white/10 px-3 py-2 text-sm font-black text-white"
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
+      <details className="group lg:hidden" aria-label="Menu movil">
+        <summary className="flex cursor-pointer items-center justify-center gap-2 bg-db-orange px-4 py-3 text-sm font-black text-white marker:content-none">
+          <span>MENU</span>
+          <svg className="size-4 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <nav className="grid grid-cols-3 gap-1.5 border-t-2 border-db-orange bg-[#111] px-3 py-3" aria-label="Menu principal movil">
+          {menuItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="focus-ring rounded-md bg-white/[0.07] px-2 py-3 text-center text-xs font-black text-white hover:bg-db-orange"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </details>
     </header>
   );
 }
