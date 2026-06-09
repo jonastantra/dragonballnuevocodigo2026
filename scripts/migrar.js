@@ -138,10 +138,34 @@ function stripHtml(value) {
     .trim();
 }
 
-function cleanDescription(value, titulo) {
+function truncate(value, max) {
+  if (value.length <= max) return value;
+  const cut = value.slice(0, max);
+  return cut.replace(/[,.;:\s]+$/, "") + "...";
+}
+
+function buildSeoContext(category, numero) {
+  const saga = category?.categoria || "Dragon Ball";
+  const num = numero && numero !== 9999 ? numero : null;
+
+  const fragments = [
+    num ? `Episodio ${num} completo de ${saga}` : `Capitulo completo de ${saga}`,
+    "disponible online en audio latino y espanol",
+    "con reproductor HD responsivo optimizado para movil, tablet y escritorio",
+    "miras la serie sin cortes y con opciones alternativas de visualizacion",
+    "forma parte del catalogo de Dragon Ball HD Sin Limites",
+  ];
+
+  return fragments;
+}
+
+function cleanDescription(value, titulo, category, numero) {
   const text = stripHtml(value);
-  if (text && text.length > 20) return text;
-  return `Disfruta ${titulo} online en Dragon Ball HD Sin Limites con reproductor responsivo y opciones alternativas de visualizacion.`;
+  const base = text && text.length > 20 ? text : `Revive ${titulo} con la mejor calidad de imagen y sonido.`;
+  const context = buildSeoContext(category, numero);
+  const merged = [base, ...context].join(". ");
+  const withDot = merged.endsWith(".") ? merged : `${merged}.`;
+  return truncate(withDot, 500);
 }
 
 function extractLinks(html) {
@@ -513,7 +537,9 @@ function migrate() {
       const category = inferCategory(titulo, sourceCategory);
       const descripcion = cleanDescription(
         pick(record, ["content", "excerpt", "descripcion", "description"]),
-        titulo
+        titulo,
+        category,
+        episodeNumber(titulo)
       );
       const imagen =
         pick(record, [
@@ -549,6 +575,7 @@ function migrate() {
       addUniquePath(aliases, `/${slug}/`);
       addUniquePath(aliases, `/${slug}/feed/`);
       addUniquePath(aliases, id ? `/archivos/${id}/` : "");
+      addUniquePath(aliases, id ? `/archivos/${id}/feed/` : "");
       addUniquePath(aliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
       addUniquePath(aliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
 
