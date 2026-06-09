@@ -140,32 +140,23 @@ function stripHtml(value) {
 
 function truncate(value, max) {
   if (value.length <= max) return value;
-  const cut = value.slice(0, max);
+  const cut = value.slice(0, max - 3);
   return cut.replace(/[,.;:\s]+$/, "") + "...";
-}
-
-function buildSeoContext(category, numero) {
-  const saga = category?.categoria || "Dragon Ball";
-  const num = numero && numero !== 9999 ? numero : null;
-
-  const fragments = [
-    num ? `Episodio ${num} completo de ${saga}` : `Capitulo completo de ${saga}`,
-    "disponible online en audio latino y espanol",
-    "con reproductor HD responsivo optimizado para movil, tablet y escritorio",
-    "miras la serie sin cortes y con opciones alternativas de visualizacion",
-    "forma parte del catalogo de Dragon Ball HD Sin Limites",
-  ];
-
-  return fragments;
 }
 
 function cleanDescription(value, titulo, category, numero) {
   const text = stripHtml(value);
-  const base = text && text.length > 20 ? text : `Revive ${titulo} con la mejor calidad de imagen y sonido.`;
-  const context = buildSeoContext(category, numero);
-  const merged = [base, ...context].join(". ");
-  const withDot = merged.endsWith(".") ? merged : `${merged}.`;
-  return truncate(withDot, 500);
+  const saga = category?.categoria || "Dragon Ball";
+  const num = numero && numero !== 9999 ? numero : null;
+
+  let base = text && text.length > 20 ? text : `Revive ${titulo} con la mejor calidad de imagen y sonido.`;
+  if (!base.endsWith(".") && !base.endsWith("!") && !base.endsWith("?")) base += ".";
+
+  const ep = num ? `Episodio ${num}` : "Capitulo";
+  const suffix = `${ep} de ${saga} disponible online en audio latino con reproductor HD optimizado para movil, tablet y escritorio en Dragon Ball HD Sin Limites.`;
+
+  const merged = `${base} ${suffix}`;
+  return truncate(merged, 500);
 }
 
 function extractLinks(html) {
