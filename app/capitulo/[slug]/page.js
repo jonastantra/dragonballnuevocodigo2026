@@ -57,7 +57,7 @@ export default async function CapituloPage({ params }) {
     name: capitulo.titulo,
     description: capitulo.descripcion || `Ver ${capitulo.titulo} online en Dragon Ball HD Sin Limites.`,
     thumbnailUrl: capitulo.imagen ? [capitulo.imagen] : undefined,
-    uploadDate: "2026-05-20",
+    uploadDate: "2026-05-20T00:00:00+00:00",
     embedUrl: capitulo.iframe?.match(/src=["']([^"']+)["']/i)?.[1],
   };
 

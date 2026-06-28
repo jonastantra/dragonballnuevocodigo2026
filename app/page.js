@@ -104,7 +104,7 @@ export default function HomePage() {
                 index === 0 ? "col-span-2 lg:col-span-2" : ""
               }`}
             >
-              <div className="aspect-video bg-zinc-950">
+              <div className="aspect-video bg-zinc-950" style={{ aspectRatio: "16 / 9" }}>
                 {capitulo.imagen ? (
                   <img
                     src={capitulo.imagen}
@@ -145,7 +145,7 @@ export default function HomePage() {
               href={section.href}
               className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 shadow-card transition hover:-translate-y-1 hover:border-db-orange"
             >
-              <div className="aspect-video bg-zinc-950">
+              <div className="aspect-video bg-zinc-950" style={{ aspectRatio: "16 / 9" }}>
                 {section.cover ? (
                   <img
                     src={section.cover}

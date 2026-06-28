@@ -48,6 +48,7 @@ export default function PlayerTabs({ players, coverImage, title }) {
           id="player-panel"
           onClick={() => setIsLoaded(true)}
           className="relative aspect-video overflow-hidden rounded-lg bg-zinc-950 border border-white/5 cursor-pointer group shadow-2xl"
+          style={{ aspectRatio: "16 / 9" }}
         >
           {coverImage ? (
             <img
@@ -126,7 +127,7 @@ export default function PlayerTabs({ players, coverImage, title }) {
         </div>
       )}
 
-      <div className="video-frame relative aspect-video overflow-hidden rounded-lg bg-black">
+      <div className="video-frame relative aspect-video overflow-hidden rounded-lg bg-black" style={{ aspectRatio: "16 / 9" }}>
         {/* Spinner en el fondo mientras carga el iframe */}
         <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-0">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-[#ff6b1a]" />

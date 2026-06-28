@@ -1,6 +1,13 @@
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import PopupAds from "@/components/PopupAds";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 const siteUrl = "https://dragonballhdsinlimites.net";
 
@@ -63,8 +70,8 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="es">
-      <body>
+    <html lang="es" className={inter.variable}>
+      <body className={inter.className}>
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

@@ -112,7 +112,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
                 href={episodeHref(item)}
                 className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 transition hover:-translate-y-1 hover:border-db-orange"
               >
-                <div className="aspect-video bg-zinc-950">
+                <div className="aspect-video bg-zinc-950" style={{ aspectRatio: "16 / 9" }}>
                   {item.imagen ? (
                     <img
                       src={item.imagen}
