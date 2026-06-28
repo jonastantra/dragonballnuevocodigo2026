@@ -23,16 +23,21 @@ function optimizedUrl(urlPath) {
 
 async function ensureOptimized(inputPath, outputPath) {
   if (fs.existsSync(outputPath)) return false;
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  await sharp(inputPath)
-    .rotate()
-    .resize({
-      width: TARGET_WIDTH,
-      withoutEnlargement: true,
-    })
-    .webp({ quality: QUALITY, effort: 4 })
-    .toFile(outputPath);
-  return true;
+  try {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    await sharp(inputPath)
+      .rotate()
+      .resize({
+        width: TARGET_WIDTH,
+        withoutEnlargement: true,
+      })
+      .webp({ quality: QUALITY, effort: 4 })
+      .toFile(outputPath);
+    return true;
+  } catch (err) {
+    console.error(`Saltando ${path.relative(ROOT, inputPath)}: ${err.message}`);
+    return false;
+  }
 }
 
 async function main() {

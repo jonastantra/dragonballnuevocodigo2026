@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import PopupAds from "@/components/PopupAds";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -71,6 +70,10 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="es" className={inter.variable}>
+      <head>
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+      </head>
       <body className={inter.className}>
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -99,7 +102,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
-        <PopupAds />
         {children}
       </body>
     </html>

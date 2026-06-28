@@ -35,6 +35,7 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true"
+          CUSTOM_DOMAIN: "true"
 
       - name: Prepare Pages artifact
         run: touch out/.nojekyll

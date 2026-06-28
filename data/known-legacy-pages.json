@@ -22,5 +22,89 @@
     "title": "Sobre nosotros",
     "description": "Pagina historica de informacion del sitio.",
     "category": "Pagina"
+  },
+  {
+    "path": "/21-torneo-de-las-artes-marciales-dragon-ball/",
+    "title": "21 Torneo de las Artes Marciales Dragon Ball",
+    "description": "Listado de capitulos del 21 Torneo de las Artes Marciales.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/saga-garlick-jr/",
+    "title": "Saga Garlick Jr",
+    "description": "Capitulos de la Saga Garlick Jr.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/saga-saiyayin/",
+    "title": "Saga Saiyajin",
+    "description": "Capitulos de la Saga Saiyajin.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/saga-freezer/",
+    "title": "Saga Freezer",
+    "description": "Capitulos de la Saga Freezer.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/saga-de-cell/",
+    "title": "Saga de Cell",
+    "description": "Capitulos de la Saga de Cell.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/saga-de-majin-boo/",
+    "title": "Saga de Majin Boo",
+    "description": "Capitulos de la Saga de Majin Boo.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/db-kai/",
+    "title": "Dragon Ball Kai",
+    "description": "Capitulos de Dragon Ball Kai.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-z-capitulos-online-espanol-latino/",
+    "title": "DB Z",
+    "description": "Capitulos de Dragon Ball Z en audio latino.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-gt-saga-de-los-dragones-malignos/",
+    "title": "Dragon Ball GT Saga de los Dragones Malignos",
+    "description": "Capitulos de Dragon Ball GT.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-gt-saga-de-baby/",
+    "title": "Dragon Ball GT Saga de Baby",
+    "description": "Capitulos de Dragon Ball GT Saga de Baby.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-gt-saga-de-super-androide-17/",
+    "title": "Dragon Ball GT Saga de Super Androide 17",
+    "description": "Capitulos de Dragon Ball GT.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-gt-capitulos-completos-latinos-online/",
+    "title": "DB GT",
+    "description": "Capitulos de Dragon Ball GT.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-super-sub/",
+    "title": "Dragon Ball Super SUB",
+    "description": "Capitulos de Dragon Ball Super subtitulados.",
+    "category": "Legacy"
+  },
+  {
+    "path": "/dragon-ball-heroes/",
+    "title": "Dragon Ball Heroes",
+    "description": "Capitulos de Dragon Ball Heroes.",
+    "category": "Legacy"
   }
 ]

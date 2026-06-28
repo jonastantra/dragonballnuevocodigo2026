@@ -138,10 +138,25 @@ function stripHtml(value) {
     .trim();
 }
 
-function cleanDescription(value, titulo) {
+function truncate(value, max) {
+  if (value.length <= max) return value;
+  const cut = value.slice(0, max - 3);
+  return cut.replace(/[,.;:\s]+$/, "") + "...";
+}
+
+function cleanDescription(value, titulo, category, numero) {
   const text = stripHtml(value);
-  if (text && text.length > 20) return text;
-  return `Disfruta ${titulo} online en Dragon Ball HD Sin Limites con reproductor responsivo y opciones alternativas de visualizacion.`;
+  const saga = category?.categoria || "Dragon Ball";
+  const num = numero && numero !== 9999 ? numero : null;
+
+  let base = text && text.length > 20 ? text : `Revive ${titulo} con la mejor calidad de imagen y sonido.`;
+  if (!base.endsWith(".") && !base.endsWith("!") && !base.endsWith("?")) base += ".";
+
+  const ep = num ? `Episodio ${num}` : "Capitulo";
+  const suffix = `${ep} de ${saga} disponible online en audio latino con reproductor HD optimizado para movil, tablet y escritorio en Dragon Ball HD Sin Limites.`;
+
+  const merged = `${base} ${suffix}`;
+  return truncate(merged, 500);
 }
 
 function extractLinks(html) {
@@ -513,7 +528,9 @@ function migrate() {
       const category = inferCategory(titulo, sourceCategory);
       const descripcion = cleanDescription(
         pick(record, ["content", "excerpt", "descripcion", "description"]),
-        titulo
+        titulo,
+        category,
+        episodeNumber(titulo)
       );
       const imagen =
         pick(record, [
@@ -549,6 +566,7 @@ function migrate() {
       addUniquePath(aliases, `/${slug}/`);
       addUniquePath(aliases, `/${slug}/feed/`);
       addUniquePath(aliases, id ? `/archivos/${id}/` : "");
+      addUniquePath(aliases, id ? `/archivos/${id}/feed/` : "");
       addUniquePath(aliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
       addUniquePath(aliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
 

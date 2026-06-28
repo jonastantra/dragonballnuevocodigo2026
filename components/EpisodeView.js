@@ -42,7 +42,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
           </p>
         </div>
 
-        <section className="rounded-lg border border-white/10 bg-db-panel p-2 shadow-card sm:p-4">
+        <section className="rounded-lg border border-white/10 bg-db-panel p-2 shadow-card sm:p-4" style={{ contain: "layout paint", contentVisibility: "auto" }}>
           <PlayerTabs
             players={capitulo.players?.length ? capitulo.players : [{ label: "Opcion 1", embed: capitulo.iframe }]}
             coverImage={capitulo.imagen}
