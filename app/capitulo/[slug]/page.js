@@ -1,6 +1,6 @@
 import EpisodeView from "@/components/EpisodeView";
 import capitulos from "@/data/capitulos.json";
-import { episodeHref, findCapituloBySlug, siteUrl } from "@/lib/site";
+import { episodeHref, findCapituloBySlug, getEpisodeDescription, siteUrl } from "@/lib/site";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-static";
@@ -23,10 +23,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: capitulo.seoTitle || capitulo.titulo,
-    description:
-      capitulo.seoDescription ||
-      capitulo.descripcion ||
-      `${capitulo.titulo} online en Dragon Ball HD Sin Limites. Reproductor responsivo optimizado para movil.`,
+    description: getEpisodeDescription(capitulo),
     alternates: {
       canonical: episodeHref(capitulo),
     },
@@ -34,13 +31,13 @@ export async function generateMetadata({ params }) {
       type: "video.episode",
       url: `${siteUrl}${episodeHref(capitulo)}`,
       title: capitulo.titulo,
-      description: `Ver ${capitulo.titulo} online.`,
+      description: getEpisodeDescription(capitulo),
       images: capitulo.imagen ? [{ url: capitulo.imagen, alt: capitulo.titulo }] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: capitulo.titulo,
-      description: `Ver ${capitulo.titulo} online.`,
+      description: getEpisodeDescription(capitulo),
       images: capitulo.imagen ? [capitulo.imagen] : [],
     },
   };
@@ -55,7 +52,7 @@ export default async function CapituloPage({ params }) {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     name: capitulo.titulo,
-    description: capitulo.descripcion || `Ver ${capitulo.titulo} online en Dragon Ball HD Sin Limites.`,
+    description: getEpisodeDescription(capitulo),
     thumbnailUrl: capitulo.imagen ? [capitulo.imagen] : undefined,
     uploadDate: "2026-05-20T00:00:00+00:00",
     embedUrl: capitulo.iframe?.match(/src=["']([^"']+)["']/i)?.[1],

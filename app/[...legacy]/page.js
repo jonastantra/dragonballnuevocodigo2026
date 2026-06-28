@@ -10,6 +10,7 @@ import {
   findLegacyPageByPath,
   findUtilityByPath,
   getCategoryCapitulos,
+  getEpisodeDescription,
   getLegacyPages,
   pathToSegments,
   siteUrl,
@@ -54,16 +55,13 @@ export async function generateMetadata({ params }) {
   if (capitulo) {
     return {
       title: capitulo.seoTitle || capitulo.titulo,
-      description:
-        capitulo.seoDescription ||
-        capitulo.descripcion ||
-        `${capitulo.titulo} online en Dragon Ball HD Sin Limites.`,
+      description: getEpisodeDescription(capitulo),
       alternates: { canonical: episodeHref(capitulo) },
       openGraph: {
         type: "video.episode",
         url: `${siteUrl}${episodeHref(capitulo)}`,
         title: capitulo.titulo,
-        description: `Ver ${capitulo.titulo} online.`,
+        description: getEpisodeDescription(capitulo),
         images: capitulo.imagen ? [{ url: capitulo.imagen, alt: capitulo.titulo }] : [],
       },
     };
@@ -110,7 +108,7 @@ export default async function LegacyPage({ params }) {
       "@context": "https://schema.org",
       "@type": "VideoObject",
       name: capitulo.titulo,
-      description: capitulo.descripcion || `Ver ${capitulo.titulo} online en Dragon Ball HD Sin Limites.`,
+      description: getEpisodeDescription(capitulo),
       thumbnailUrl: capitulo.imagen ? [capitulo.imagen] : undefined,
       uploadDate: "2026-05-20T00:00:00+00:00",
       embedUrl: capitulo.iframe?.match(/src=["']([^"']+)["']/i)?.[1],
