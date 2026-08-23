@@ -64,6 +64,20 @@ export default function CategoryView({ category, capitulos }) {
                 </div>
               )}
             </div>
+
+            {editorial.faqs && editorial.faqs.length > 0 && (
+              <div className="mt-10 border-t border-white/10 pt-8">
+                <h2 className="text-2xl font-black text-white">Preguntas Frecuentes (FAQ)</h2>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  {editorial.faqs.map((faq, index) => (
+                    <div key={index} className="rounded-lg border border-white/10 bg-white/[0.03] p-5">
+                      <h3 className="text-base font-bold text-db-orange">{faq.question}</h3>
+                      <p className="mt-2 text-sm leading-6 text-zinc-300">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}

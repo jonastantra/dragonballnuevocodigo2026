@@ -23,6 +23,9 @@ export default function sitemap() {
       lastModified: new Date("2026-05-20"),
       changeFrequency: "monthly",
       priority: 0.8,
+      images: capitulo.imagen
+        ? [capitulo.imagen.startsWith("http") ? capitulo.imagen : `${siteUrl}${capitulo.imagen.startsWith("/") ? "" : "/"}${capitulo.imagen}`]
+        : [],
     })),
     ...utilityPages.map((page) => ({
       url: `${siteUrl}${page.path}`,

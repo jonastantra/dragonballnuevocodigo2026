@@ -9,6 +9,7 @@ import {
   getCategoryBreadcrumbSchema,
   getCategoryCapitulos,
   getCategoryDescription,
+  getCategoryFaqSchema,
   getCategoryTitle,
   getCollectionPageSchema,
   getUtilityBreadcrumbSchema,
@@ -138,6 +139,7 @@ export default async function LegacyPage({ params }) {
     const categoryCapitulos = getCategoryCapitulos(category);
     const breadcrumbSchema = getCategoryBreadcrumbSchema(category);
     const collectionSchema = getCollectionPageSchema(category, categoryCapitulos);
+    const faqSchema = getCategoryFaqSchema(category);
 
     return (
       <>
@@ -151,6 +153,12 @@ export default async function LegacyPage({ params }) {
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+          />
+        )}
+        {faqSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
           />
         )}
         <CategoryView category={category} capitulos={categoryCapitulos} />
