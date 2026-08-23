@@ -28,12 +28,12 @@ export default function SiteHeader() {
             <div key={item.href} className="group relative">
               <a
                 href={item.href}
-                className={`focus-ring inline-flex items-center gap-2 rounded-md px-4 py-3 text-base font-black text-white transition hover:bg-db-orange ${
+                className={`focus-ring inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-black text-white transition hover:bg-db-orange xl:px-4 xl:py-2.5 xl:text-base ${
                   index === 0 ? "bg-db-orange" : ""
                 }`}
               >
                 {item.label}
-                {item.children && <span aria-hidden="true">v</span>}
+                {item.children && <span aria-hidden="true" className="text-xs">▾</span>}
               </a>
               {item.children && (
                 <div className="invisible absolute left-0 top-full min-w-72 translate-y-2 rounded-md border border-white/10 bg-db-panel2 p-2 opacity-0 shadow-card transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">

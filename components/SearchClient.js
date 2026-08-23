@@ -1,6 +1,7 @@
 "use client";
 
 import capitulos from "@/data/capitulos.json";
+import { episodeHref } from "@/lib/site";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 
 const normalizar = (value) =>
@@ -89,7 +90,7 @@ export default function SearchClient() {
           {resultados.map((capitulo, index) => (
             <a
               key={capitulo.slug}
-              href={capitulo.url || `/capitulo/${capitulo.slug}/`}
+              href={episodeHref(capitulo)}
               className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 transition duration-200 hover:-translate-y-1 hover:border-db-orange hover:shadow-glow"
               style={index > 9 ? { contentVisibility: "auto", containIntrinsicSize: "260px 210px" } : undefined}
             >

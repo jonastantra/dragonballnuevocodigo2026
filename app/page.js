@@ -1,9 +1,47 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import capitulos from "@/data/capitulos.json";
-import { episodeHref } from "@/lib/site";
+import {
+  episodeHref,
+  generateHomeFeaturedItemListSchema,
+  generateHomeSagasItemListSchema,
+  siteUrl,
+} from "@/lib/site";
 
 export const dynamic = "force-static";
+
+export const metadata = {
+  title: "Ver Dragon Ball Online en Español Latino HD - Todas las Sagas Completas",
+  description:
+    "Disfruta de todos los capítulos completos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online en audio latino y calidad HD sin límites.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    title: "Ver Dragon Ball Online en Español Latino HD - Todas las Sagas Completas",
+    description:
+      "Disfruta de todos los capítulos completos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online en audio latino y calidad HD sin límites.",
+    siteName: "Dragon Ball HD Sin Limites",
+    images: [
+      {
+        url: `${siteUrl}/og-image.webp`,
+        width: 1200,
+        height: 630,
+        alt: "Ver Dragon Ball Online en Español Latino HD",
+        type: "image/webp",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ver Dragon Ball Online en Español Latino HD - Todas las Sagas Completas",
+    description:
+      "Disfruta de todos los capítulos completos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online en audio latino y calidad HD sin límites.",
+    images: [`${siteUrl}/og-image.webp`],
+  },
+};
 
 const quickSections = [
   {
@@ -51,25 +89,20 @@ export default function HomePage() {
     const cover = matches.find((capitulo) => capitulo.imagen)?.imagen || "";
     return { ...section, count: matches.length, cover };
   });
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Sagas de Dragon Ball Online",
-    numberOfItems: sections.length,
-    itemListElement: sections.map((section, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: section.href,
-      name: section.title,
-    })),
-  };
+
+  const featuredItemListSchema = generateHomeFeaturedItemListSchema(featured);
+  const sagasItemListSchema = generateHomeSagasItemListSchema(sections);
 
   return (
     <main>
       {featured[0]?.imagen && <link rel="preload" as="image" href={featured[0].imagen} fetchPriority="high" />}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(featuredItemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(sagasItemListSchema) }}
       />
       <SiteHeader />
 
@@ -128,7 +161,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <section id="sagas" className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-black uppercase text-db-orange">Sagas y categorias</p>

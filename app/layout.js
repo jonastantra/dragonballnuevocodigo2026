@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { generateOrganizationSchema, generateWebSiteSchema, siteUrl } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -8,16 +9,26 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const siteUrl = "https://dragonballhdsinlimites.net";
-
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dragon Ball HD Sin Limites - Ver todos los episodios",
+    default: "Ver Dragon Ball Online en Español Latino HD - Todas las Sagas Completas",
     template: "%s | Dragon Ball HD Sin Limites",
   },
   description:
-    "Ver Dragon Ball HD Sin Limites en una biblioteca estatica, rapida y optimizada para movil con todos los capitulos organizados.",
+    "Ver todos los capítulos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas completas online en audio latino y calidad HD en Dragon Ball HD Sin Límites.",
+  keywords: [
+    "Dragon Ball",
+    "Dragon Ball Z",
+    "Dragon Ball Super",
+    "Dragon Ball GT",
+    "Dragon Ball Kai",
+    "Dragon Ball Latino",
+    "ver Dragon Ball online",
+    "capitulos completos Dragon Ball",
+    "anime online HD",
+    "Dragon Ball sin censura",
+  ],
   alternates: {
     canonical: "/",
   },
@@ -26,14 +37,24 @@ export const metadata = {
     locale: "es_MX",
     url: siteUrl,
     siteName: "Dragon Ball HD Sin Limites",
-    title: "Dragon Ball HD Sin Limites",
+    title: "Dragon Ball HD Sin Limites - Ver todos los episodios",
     description:
       "Todos los episodios de Dragon Ball en una experiencia estatica, veloz y lista para moviles.",
+    images: [
+      {
+        url: `${siteUrl}/og-image.webp`,
+        width: 1200,
+        height: 630,
+        alt: "Dragon Ball HD Sin Límites - Ver Capítulos Completos Online en Audio Latino HD",
+        type: "image/webp",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dragon Ball HD Sin Limites",
+    title: "Dragon Ball HD Sin Limites - Ver todos los episodios",
     description: "Todos los capitulos de Dragon Ball online en modo streaming.",
+    images: [`${siteUrl}/og-image.webp`],
   },
   robots: {
     index: true,
@@ -56,17 +77,9 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Dragon Ball HD Sin Limites",
-    url: siteUrl,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/buscar/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  };
+  // Global Structured Data (JSON-LD): "@type": "WebSite", "@type": "Organization", "SearchAction"
+  const websiteSchema = generateWebSiteSchema();
+  const organizationSchema = generateOrganizationSchema();
 
   return (
     <html lang="es" className={inter.variable}>
@@ -101,6 +114,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
         {children}
       </body>

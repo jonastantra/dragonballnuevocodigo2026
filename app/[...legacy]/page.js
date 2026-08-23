@@ -1,17 +1,17 @@
 import CategoryView from "@/components/CategoryView";
-import EpisodeView from "@/components/EpisodeView";
 import UtilityPage from "@/components/UtilityPage";
-import capitulos from "@/data/capitulos.json";
 import {
+  categoryAliases,
   categoryPages,
-  episodeHref,
-  findCapituloByPath,
   findCategoryByPath,
   findLegacyPageByPath,
   findUtilityByPath,
+  getCategoryBreadcrumbSchema,
   getCategoryCapitulos,
-  getEpisodeDescription,
-  getLegacyPages,
+  getCategoryDescription,
+  getCategoryTitle,
+  getCollectionPageSchema,
+  getUtilityBreadcrumbSchema,
   pathToSegments,
   siteUrl,
   utilityPages,
@@ -28,69 +28,99 @@ function paramsToPath(params) {
 export function generateStaticParams() {
   const paths = new Set();
 
-  for (const capitulo of capitulos) {
-    paths.add(episodeHref(capitulo));
-    for (const alias of capitulo.aliases || []) {
-      paths.add(alias);
+  for (const category of categoryPages) {
+    if (category.path) {
+      paths.add(category.path);
     }
   }
-  for (const category of categoryPages) {
-    paths.add(category.path);
+
+  for (const alias of categoryAliases) {
+    if (alias.path) {
+      paths.add(alias.path);
+    }
   }
+
   for (const page of utilityPages) {
-    paths.add(page.path);
-  }
-  for (const page of getLegacyPages()) {
-    paths.add(page.path);
+    if (page.path) {
+      paths.add(page.path);
+    }
   }
 
   return [...paths]
-    .filter((path) => path && path !== "/")
+    .filter((path) => path && path !== "/" && !path.startsWith("/buscar") && !path.startsWith("/capitulo/"))
     .map((path) => ({ legacy: pathToSegments(path) }));
 }
 
 export async function generateMetadata({ params }) {
   const path = paramsToPath(await params);
-  const capitulo = findCapituloByPath(path);
-  if (capitulo) {
-    return {
-      title: capitulo.seoTitle || capitulo.titulo,
-      description: getEpisodeDescription(capitulo),
-      alternates: { canonical: episodeHref(capitulo) },
-      openGraph: {
-        type: "video.episode",
-        url: `${siteUrl}${episodeHref(capitulo)}`,
-        title: capitulo.titulo,
-        description: getEpisodeDescription(capitulo),
-        images: capitulo.imagen ? [{ url: capitulo.imagen, alt: capitulo.titulo }] : [],
-      },
-    };
-  }
 
   const category = findCategoryByPath(path);
   if (category) {
+    const canonicalPath = category.canonical || category.canonicalPath || category.path;
+    const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
+    const title = getCategoryTitle(category);
+    const description = getCategoryDescription(category);
     return {
-      title: category.title,
-      description: category.description,
-      alternates: { canonical: category.path },
+      title,
+      description,
+      alternates: {
+        canonical: canonicalPath,
+      },
+      openGraph: {
+        type: "website",
+        url: fullCanonicalUrl,
+        title,
+        description,
+        siteName: "Dragon Ball HD Sin Limites",
+        images: [`${siteUrl}/og-image.webp`],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [`${siteUrl}/og-image.webp`],
+      },
     };
   }
 
   const utility = findUtilityByPath(path);
   if (utility) {
+    const canonicalPath = utility.canonical || utility.path;
+    const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
     return {
       title: utility.title,
-      alternates: { canonical: utility.path },
+      description: utility.description || undefined,
+      alternates: {
+        canonical: canonicalPath,
+      },
+      openGraph: {
+        type: "website",
+        url: fullCanonicalUrl,
+        title: utility.title,
+        description: utility.description || undefined,
+        siteName: "Dragon Ball HD Sin Limites",
+      },
       robots: utility.path === "/blog/" ? { index: true, follow: true } : { index: false, follow: true },
     };
   }
 
   const legacyPage = findLegacyPageByPath(path);
   if (legacyPage) {
+    const canonicalPath = legacyPage.canonical || legacyPage.path;
+    const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
     return {
       title: legacyPage.title,
       description: legacyPage.description,
-      alternates: { canonical: legacyPage.path },
+      alternates: {
+        canonical: canonicalPath,
+      },
+      openGraph: {
+        type: "website",
+        url: fullCanonicalUrl,
+        title: legacyPage.title,
+        description: legacyPage.description,
+        siteName: "Dragon Ball HD Sin Limites",
+      },
     };
   }
 
@@ -102,43 +132,62 @@ export async function generateMetadata({ params }) {
 
 export default async function LegacyPage({ params }) {
   const path = paramsToPath(await params);
-  const capitulo = findCapituloByPath(path);
-  if (capitulo) {
-    const videoSchema = {
-      "@context": "https://schema.org",
-      "@type": "VideoObject",
-      name: capitulo.titulo,
-      description: getEpisodeDescription(capitulo),
-      thumbnailUrl: capitulo.imagen ? [capitulo.imagen] : undefined,
-      uploadDate: "2026-05-20T00:00:00+00:00",
-      embedUrl: capitulo.iframe?.match(/src=["']([^"']+)["']/i)?.[1],
-    };
-
-    return (
-      <>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
-        />
-        <EpisodeView capitulo={capitulo} capitulos={capitulos} />
-      </>
-    );
-  }
 
   const category = findCategoryByPath(path);
   if (category) {
     const categoryCapitulos = getCategoryCapitulos(category);
-    return <CategoryView category={category} capitulos={categoryCapitulos} />;
+    const breadcrumbSchema = getCategoryBreadcrumbSchema(category);
+    const collectionSchema = getCollectionPageSchema(category, categoryCapitulos);
+
+    return (
+      <>
+        {breadcrumbSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+          />
+        )}
+        {collectionSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+          />
+        )}
+        <CategoryView category={category} capitulos={categoryCapitulos} />
+      </>
+    );
   }
 
   const utility = findUtilityByPath(path);
   if (utility) {
-    return <UtilityPage page={utility} />;
+    const breadcrumbSchema = getUtilityBreadcrumbSchema(utility);
+    return (
+      <>
+        {breadcrumbSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+          />
+        )}
+        <UtilityPage page={utility} />
+      </>
+    );
   }
 
   const legacyPage = findLegacyPageByPath(path);
   if (legacyPage) {
-    return <UtilityPage page={legacyPage} />;
+    const breadcrumbSchema = getUtilityBreadcrumbSchema(legacyPage);
+    return (
+      <>
+        {breadcrumbSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+          />
+        )}
+        <UtilityPage page={legacyPage} />
+      </>
+    );
   }
 
   notFound();

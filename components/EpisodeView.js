@@ -1,15 +1,13 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import PlayerTabs from "@/components/PlayerTabs";
-import { episodeHref } from "@/lib/site";
+import { episodeHref, getCategoryHref, getRelatedEpisodes } from "@/lib/site";
 
 export default function EpisodeView({ capitulo, capitulos }) {
   const index = capitulos.findIndex((item) => item.slug === capitulo.slug);
   const anterior = index > 0 ? capitulos[index - 1] : null;
   const siguiente = index < capitulos.length - 1 ? capitulos[index + 1] : null;
-  const relacionados = capitulos
-    .filter((item) => item.slug !== capitulo.slug && item.saga === capitulo.saga)
-    .slice(0, 6);
+  const relacionados = getRelatedEpisodes(capitulo, capitulos, 6);
 
   return (
     <main className="min-h-screen">
@@ -21,7 +19,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
             Inicio
           </a>
           <span className="mx-2 text-zinc-600">/</span>
-          <a className="hover:text-db-orange" href={`/category/${capitulo.categoriaSlug}/`}>
+          <a className="hover:text-db-orange" href={getCategoryHref(capitulo.categoriaSlug)}>
             {capitulo.categoria}
           </a>
           <span className="mx-2 text-zinc-600">/</span>
@@ -42,7 +40,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
           </p>
         </div>
 
-        <section className="rounded-lg border border-white/10 bg-db-panel p-2 shadow-card sm:p-4" style={{ contain: "layout paint", contentVisibility: "auto" }}>
+        <section className="rounded-lg border border-white/10 bg-db-panel p-2 shadow-card sm:p-4">
           <PlayerTabs
             players={capitulo.players?.length ? capitulo.players : [{ label: "Opcion 1", embed: capitulo.iframe }]}
             coverImage={capitulo.imagen}

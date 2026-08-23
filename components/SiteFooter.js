@@ -1,4 +1,4 @@
-import { menuItems, utilityPages } from "@/lib/site";
+import { legalPages, menuItems } from "@/lib/site";
 
 export default function SiteFooter() {
   return (
@@ -28,7 +28,7 @@ export default function SiteFooter() {
           <div>
             <h2 className="mb-3 font-black uppercase text-white">Legal</h2>
             <div className="flex flex-wrap gap-3 md:justify-end">
-              {utilityPages.slice(1).map((page) => (
+              {legalPages.map((page) => (
                 <a key={page.path} href={page.path} className="font-bold hover:text-db-orange">
                   {page.title}
                 </a>

@@ -522,8 +522,12 @@ function migrate() {
     .map((record, index) => {
       const titulo = pick(record, ["titulo", "title", "post_title", "Título"]);
       const id = pick(record, ["id"]);
-      const slug = pick(record, ["slug", "post_name"]) || slugify(titulo || `capitulo-${index + 1}`);
-      const legacy = legacyById.get(id) || legacyBySlug.get(slug) || {};
+      const rawSlug = pick(record, ["slug", "post_name"]);
+      const isCorrupted = !rawSlug || /c028543|[\{\}]/i.test(rawSlug);
+      const slug = isCorrupted
+        ? slugify(titulo || `capitulo-${index + 1}`)
+        : slugify(rawSlug);
+      const legacy = legacyById.get(id) || (rawSlug ? legacyBySlug.get(rawSlug) : undefined) || legacyBySlug.get(slug) || {};
       const sourceCategory = pick(record, ["categorias", "categorías"]) || legacy.categoria;
       const category = inferCategory(titulo, sourceCategory);
       const descripcion = cleanDescription(
@@ -558,23 +562,31 @@ function migrate() {
       const seoTitle = pick(record, ["rankmathtitle", "aioseotitle"]);
       const seoDescription = pick(record, ["rankmathdescription", "aioseodescription"]);
       const links = extractLinks(collectValues(record, ["linkurl"]).join(" "));
-      const aliases = [];
-      addUniquePath(aliases, pathFromUrl(pick(record, ["permalink"])));
-      addUniquePath(aliases, legacy.path);
-      addUniquePath(aliases, `/${category.categoriaSlug}/${slug}/`);
-      addUniquePath(aliases, `/capitulo/${slug}/`);
-      addUniquePath(aliases, `/${slug}/`);
-      addUniquePath(aliases, `/${slug}/feed/`);
-      addUniquePath(aliases, id ? `/archivos/${id}/` : "");
-      addUniquePath(aliases, id ? `/archivos/${id}/feed/` : "");
-      addUniquePath(aliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
-      addUniquePath(aliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
+      const canonicalUrl = `/capitulo/${slug}/`;
+      const rawAliases = [];
+      addUniquePath(rawAliases, pathFromUrl(pick(record, ["permalink"])));
+      addUniquePath(rawAliases, legacy.path);
+      addUniquePath(rawAliases, `/${category.categoriaSlug}/${slug}/`);
+      addUniquePath(rawAliases, `/${slug}/`);
+      addUniquePath(rawAliases, `/${slug}/feed/`);
+      addUniquePath(rawAliases, id ? `/archivos/${id}/` : "");
+      addUniquePath(rawAliases, id ? `/archivos/${id}/feed/` : "");
+      addUniquePath(rawAliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
+      addUniquePath(rawAliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
+      if (rawSlug && rawSlug !== slug) {
+        addUniquePath(rawAliases, `/${rawSlug}/`);
+        addUniquePath(rawAliases, `/${rawSlug}/feed/`);
+        addUniquePath(rawAliases, `/${category.categoriaSlug}/${rawSlug}/`);
+      }
+
+      // Strictly exclude canonical URL from aliases to eliminate route collision hazard
+      const aliases = rawAliases.filter((alias) => alias !== canonicalUrl);
 
       return {
         id,
         titulo,
         slug,
-        url: pathFromUrl(pick(record, ["permalink"])) || legacy.path || `/${category.categoriaSlug}/${slug}/`,
+        url: canonicalUrl,
         categoria: category.categoria,
         categoriaSlug: category.categoriaSlug,
         saga: category.saga,

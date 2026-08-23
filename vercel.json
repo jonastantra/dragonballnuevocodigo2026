@@ -4,6 +4,15 @@
   "outputDirectory": "out",
   "headers": [
     {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/optimized/(.*)",
       "headers": [
         {
@@ -20,6 +29,342 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/(sitemap\\.xml|robots\\.txt)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=43200"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/feed",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/feed/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/comments/feed",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/comments/feed/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-json",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-json/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/xmlrpc.php",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-admin",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-login.php",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/wp-content/uploads/:path*",
+      "destination": "/uploads/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/:slug/feed",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:slug/amp",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:slug/trackback",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/capitulo/:slug/feed",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/capitulo/:slug/amp",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/capitulo/:slug/trackback",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/archivos/date/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/archivos/:id/feed",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/archivos/:id",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/author/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/tag/:path*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/page/:num*",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/blog",
+      "destination": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-capitulos-completos-latinos-online",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-saga-el-gran-viaje",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-saga-el-gran-viaje/page/:num*",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-saga-de-super-androide-17",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-saga-de-baby",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt-saga-de-los-dragones-malignos",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball-gt/dragon-ball-gt-saga-de-baby",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball-gt/dragon-ball-gt-saga-de-super-androide-17",
+      "destination": "/category/dragon-ball-gt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-z-capitulos-online-espanol-latino",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-z-capitulos-online-espanol-latino/page/:num*",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragonballz-capitulos-online-espanol-latino",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-freezer",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-de-cell",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-de-majin-boo",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-de-majin-boo/page/:num*",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-saiyayin",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/saga-garlick-jr",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball-z/page/:num*",
+      "destination": "/category/dragon-ball-z/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball/21-torneo-de-las-artes-marciales",
+      "destination": "/category/dragon-ball/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball/22-torneo-de-las-artes-marciales",
+      "destination": "/category/dragon-ball/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball/23o-torneo-de-las-artes-marciales",
+      "destination": "/category/dragon-ball/",
+      "statusCode": 301
+    },
+    {
+      "source": "/category/dragon-ball/saga-de-piccolo-daimaku",
+      "destination": "/category/dragon-ball/",
+      "statusCode": 301
+    },
+    {
+      "source": "/21-torneo-de-las-artes-marciales-dragon-ball",
+      "destination": "/category/dragon-ball/",
+      "statusCode": 301
+    },
+    {
+      "source": "/db-kai",
+      "destination": "/category/dragon-ball-kai/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-super-sub",
+      "destination": "/category/dragon-ball-super-sub/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-todas-las-peliculas/dragon-ball-peliculas/especiales/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-todas-las-peliculas/dragon-ball-z-peliculas/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-todas-las-peliculas/dragon-ball-peliculas/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-todas-las-peliculas/dragon-ball-super-peliculas/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-todas-las-peliculas/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/2013/:month/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:year(\\d{4})/:month(\\d{2})/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-z/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-kai/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-super-latino/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-super-sub/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-gt/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball-heroes/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/dragon-ball/:slug",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:slug((?!buscar|capitulo|category|uploads|optimized|blog|politica-de-privacidad|terminos-y-condiciones|aviso-legal|contacto|sobre-nosotros|dragon-ball-todas-las-peliculas-y-especiales|ads\\.txt|robots\\.txt|sitemap\\.xml|favicon\\.ico|_next|archivos|author|tag|feed|comments|wp-json|xmlrpc\\.php|wp-admin|wp-login\\.php|page)[^/]+)",
+      "destination": "/capitulo/:slug/",
+      "statusCode": 301
     }
   ]
 }

@@ -1,15 +1,36 @@
 import SearchClient from "@/components/SearchClient";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
 
 export const metadata = {
   title: "Buscar episodios de Dragon Ball",
   description:
-    "Busca capitulos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y peliculas online.",
+    "Busca capítulos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online.",
   alternates: {
     canonical: "/buscar/",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    url: `${siteUrl}/buscar/`,
+    title: "Buscar episodios de Dragon Ball | Dragon Ball HD Sin Limites",
+    description:
+      "Busca capítulos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online.",
+    siteName: "Dragon Ball HD Sin Limites",
+    images: [`${siteUrl}/og-image.webp`],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buscar episodios de Dragon Ball | Dragon Ball HD Sin Limites",
+    description:
+      "Busca capítulos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online.",
+    images: [`${siteUrl}/og-image.webp`],
   },
 };
 

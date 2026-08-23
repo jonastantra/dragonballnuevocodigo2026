@@ -1,13 +1,24 @@
 import EpisodeView from "@/components/EpisodeView";
 import capitulos from "@/data/capitulos.json";
-import { episodeHref, findCapituloBySlug, getEpisodeDescription, siteUrl } from "@/lib/site";
+import {
+  episodeHref,
+  findCapituloBySlug,
+  getEpisodeBreadcrumbSchema,
+  getEpisodeDescription,
+  getEpisodeTitle,
+  getEpisodeTVSchema,
+  getEpisodeVideoSchema,
+  siteUrl,
+} from "@/lib/site";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return capitulos.map((capitulo) => ({ slug: capitulo.slug }));
+  return capitulos
+    .filter((capitulo) => capitulo && typeof capitulo.slug === "string" && capitulo.slug.trim())
+    .map((capitulo) => ({ slug: capitulo.slug.trim() }));
 }
 
 export async function generateMetadata({ params }) {
@@ -21,24 +32,33 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const canonicalPath = episodeHref(capitulo);
+  const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
+  const title = getEpisodeTitle(capitulo);
+  const description = getEpisodeDescription(capitulo);
+  const imageUrl = capitulo.imagen
+    ? (capitulo.imagen.startsWith("http") ? capitulo.imagen : `${siteUrl}${capitulo.imagen}`)
+    : `${siteUrl}/og-image.webp`;
+
   return {
-    title: capitulo.seoTitle || capitulo.titulo,
-    description: getEpisodeDescription(capitulo),
+    title,
+    description,
     alternates: {
-      canonical: episodeHref(capitulo),
+      canonical: canonicalPath,
     },
     openGraph: {
       type: "video.episode",
-      url: `${siteUrl}${episodeHref(capitulo)}`,
-      title: capitulo.titulo,
-      description: getEpisodeDescription(capitulo),
-      images: capitulo.imagen ? [{ url: capitulo.imagen, alt: capitulo.titulo }] : [],
+      url: fullCanonicalUrl,
+      title,
+      description,
+      siteName: "Dragon Ball HD Sin Limites",
+      images: [{ url: imageUrl, alt: capitulo.titulo }],
     },
     twitter: {
       card: "summary_large_image",
-      title: capitulo.titulo,
-      description: getEpisodeDescription(capitulo),
-      images: capitulo.imagen ? [capitulo.imagen] : [],
+      title,
+      description,
+      images: [imageUrl],
     },
   };
 }
@@ -48,22 +68,31 @@ export default async function CapituloPage({ params }) {
   const capitulo = findCapituloBySlug(slug);
   if (!capitulo) notFound();
 
-  const videoSchema = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    name: capitulo.titulo,
-    description: getEpisodeDescription(capitulo),
-    thumbnailUrl: capitulo.imagen ? [capitulo.imagen] : undefined,
-    uploadDate: "2026-05-20T00:00:00+00:00",
-    embedUrl: capitulo.iframe?.match(/src=["']([^"']+)["']/i)?.[1],
-  };
+  // Structured Data (JSON-LD): "@type": "VideoObject", "@type": "TVEpisode", "@type": "TVSeries", "@type": "BreadcrumbList"
+  const videoSchema = getEpisodeVideoSchema(capitulo);
+  const tvSchema = getEpisodeTVSchema(capitulo);
+  const breadcrumbSchema = getEpisodeBreadcrumbSchema(capitulo);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
-      />
+      {videoSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
+        />
+      )}
+      {tvSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(tvSchema) }}
+        />
+      )}
+      {breadcrumbSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+      )}
       <EpisodeView capitulo={capitulo} capitulos={capitulos} />
     </>
   );
