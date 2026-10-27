@@ -54,7 +54,7 @@ export default function CategoryView({ category, capitulos }) {
                 <p className="mt-4 leading-8 text-zinc-300">{editorial.synopsis}</p>
                 {editorial.cast && (
                   <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-                    <h3 className="text-sm font-black uppercase text-db-orange">Voces principales</h3>
+                    <h3 className="text-sm font-black uppercase text-db-orange">Elenco de Doblaje Latino</h3>
                     <p className="mt-2 text-sm leading-6 text-zinc-300">{editorial.cast}</p>
                   </div>
                 )}

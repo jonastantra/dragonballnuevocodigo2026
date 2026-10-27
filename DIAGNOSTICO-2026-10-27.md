@@ -25,10 +25,20 @@ Fecha: 27 de octubre de 2026. Estado: **correcciones locales verificadas, no pub
 7. Las 153 fichas sin reproductor original se conservan, pero con noindex y sin presencia en el sitemap. No se borraron datos ni se inventaron fuentes de video. Las páginas utilitarias vacías tampoco se presentan como contenido indexable.
 8. Se eliminaron vistas, fechas, duraciones y perfiles sociales no respaldados. No se emite VideoObject sin una fecha de subida comprobada. Se conserva TVEpisode/Movie y navegación estructurada sin esos datos falsos.
 9. Se retiraron las fechas de modificación fijas del sitemap. Google puede rastrear URLs con parámetros para leer sus señales canónicas/noindex; el buscador permanece noindex.
-10. Optimización de imágenes idempotente: ya no agrega carpetas `optimized/optimized` en cada ejecución. Los archivos antiguos no se eliminaron.
+10. Optimización de imágenes idempotente: ya no agrega carpetas `optimized/optimized` en cada ejecución y elimina la carpeta duplicada `public/optimized/optimized/` (899 archivos duplicados). Además, se recuperaron las 21 portadas faltantes y las 3 portadas que apuntaban a `/wp-content/uploads/` (404), logrando 1,070/1,070 capítulos con imagen local verificada.
 11. Se retiró la dependencia de descarga de Google Fonts al compilar. Se usa tipografía del sistema.
 12. Next, React y herramientas de imágenes/CSS actualizados. `npm ci --include=dev` asegura que la compilación tenga sus herramientas incluso con NODE_ENV=production.
 13. La integración continua ejecuta la batería SEO y las regresiones después de compilar.
+14. **Reparación de 341+ reproductores de video rotos en `scripts/migrar.js`**:
+    - `waaw.to/f/<id>` ya no se reescribe erróneamente a `waaw.to/embed/<id>` (que devolvía HTTP 404 en 271 videos; `/f/<id>` responde HTTP 200 OK).
+    - 70 enlaces e iframes del dominio espejo expirado `pokemonlaserielatino.xyz` se normalizan a `https://waaw.to/f/` y `https://waaw.to/watch_video.php` (HTTP 200 OK).
+    - Se decodifica el hash residual de `wpdb::prepare` (`{c028543aafc3976f67633fd5fc91d12d729f54bec8d9e21796445b4c431ff5c7}` -> `%`), reparando 4 películas cuyos parámetros `watch_video.php?v=...` estaban corruptos y limpiando 46 alias.
+    - Se convierten enlaces `mega.nz/file/` a `mega.nz/embed/` (5 videos) y se extraen los 28 reproductores `drive.google.com/file/d/.../preview` desde `linkurl`.
+    - Se descartan los 15 iframes placeholder `<iframe src="AQUI"></iframe>` de Dragon Ball Heroes para que no se indexen como reproductores válidos, y se recuperan los reproductores de los episodios paralelos `12827` (DBZ 271) y `8582` (DBS Sub 104).
+15. **Redirecciones 301 con y sin barra final (`/?`) en `scripts/prepare-site.js`**:
+    - Las reglas `/:legacy((?:...)/?)` ahora coinciden tanto con barra final (`/dragon-ball-z/237-.../`) como sin barra final (`/dragon-ball-z/237-...` y URLs `.html` antiguas de Blogger) en el router estricto de Vercel.
+16. **Títulos exactos (`title: { absolute }`) y guía editorial completa en todas las categorías**:
+    - Se evita que el template global agregue `| Dragon Ball HD Sin Limites` sobre títulos de episodios y categorías que ya tienen 55–60 caracteres, y se completó la guía editorial y `FAQPage` de `/category/dragon-ball-heroes/`.
 
 ## Comprobaciones
 

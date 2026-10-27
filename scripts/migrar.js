@@ -118,6 +118,7 @@ function firstMatchingValue(record, matcher) {
 function decodeWpGarbage(value) {
   return String(value || "")
     .replace(/\uFEFF/g, "")
+    .replace(/\{?c028543aafc3976f67633fd5fc91d12d729f54bec8d9e21796445b4c431ff5c7\}?/gi, "%")
     .replace(/\\\//g, "/")
     .replace(/\\"/g, '"')
     .replace(/\\'/g, "'")
@@ -160,7 +161,10 @@ function extractLinks(html) {
   let match;
 
   while ((match = pattern.exec(source))) {
-    const url = match[1].trim();
+    const url = match[1]
+      .trim()
+      .replace(/^https?:\/\/(?:www\.)?pokemonlaserielatino\.xyz\/(?:f|embed)\//i, "https://waaw.to/f/")
+      .replace(/^https?:\/\/(?:www\.)?pokemonlaserielatino\.xyz\/watch_video\.php/i, "https://waaw.to/watch_video.php");
     const label = stripHtml(match[2]) || `Opcion ${links.length + 1}`;
     if (!/^https?:\/\//i.test(url)) continue;
     if (/wp-admin|wp-login|feed|xmlrpc/i.test(url)) continue;
@@ -176,18 +180,39 @@ function extractLinks(html) {
   });
 }
 
+function normalizePlayerUrl(rawUrl) {
+  let url = decodeWpGarbage(rawUrl).replace(/^\/\//, "https://").trim();
+  if (!/^https?:\/\//i.test(url)) return "";
+
+  url = url
+    .replace(/^https?:\/\/(?:www\.)?waaw\.to\/embed\//i, "https://waaw.to/f/")
+    .replace(/^https?:\/\/(?:www\.)?pokemonlaserielatino\.xyz\/(?:f|embed)\//i, "https://waaw.to/f/")
+    .replace(/^https?:\/\/(?:www\.)?pokemonlaserielatino\.xyz\/watch_video\.php/i, "https://waaw.to/watch_video.php")
+    .replace(/^https?:\/\/(?:www\.)?mega\.nz\/file\//i, "https://mega.nz/embed/")
+    .replace(
+      /^https?:\/\/(?:www\.)?drive\.google\.com\/file\/d\/([^/?#]+)\/(?:view|edit)[^"'\s<>]*/i,
+      "https://drive.google.com/file/d/$1/preview"
+    );
+
+  return url;
+}
+
+const VALID_EMBED_URL_PATTERN =
+  /\/embed\/|waaw\.to\/f\/|waaw\.to\/watch_video\.php|mega\.nz\/embed|sendvid\.com\/embed|ok\.ru\/videoembed|drive\.google\.com\/file\/d\/[^/]+\/preview|yourupload\.com\/embed/i;
+
 function extractEmbedUrl(html) {
   const href = html.match(/href=["']([^"']+)["']/i);
-  if (href && /\/embed\/|mega\.nz\/embed|sendvid\.com\/embed/i.test(href[1])) {
-    return href[1];
+  if (href) {
+    const normalizedHref = normalizePlayerUrl(href[1]);
+    if (normalizedHref && VALID_EMBED_URL_PATTERN.test(normalizedHref)) {
+      return normalizedHref;
+    }
   }
 
   const url = html.match(/https?:\/\/[^\s"'<>]+/i);
   if (!url) return "";
 
-  const value = url[0];
-  if (/waaw\.to\/f\//i.test(value)) return value.replace("/f/", "/embed/");
-  return value;
+  return normalizePlayerUrl(url[0]);
 }
 
 function extractHrefEmbeds(html) {
@@ -201,12 +226,8 @@ function extractHrefEmbeds(html) {
   }
 
   return links
-    .map((url) => {
-      if (/waaw\.to\/f\//i.test(url)) return url.replace("/f/", "/embed/");
-      if (/pokemonlaserielatino\.xyz\/f\//i.test(url)) return url.replace("/f/", "/embed/");
-      return url;
-    })
-    .filter((url) => /\/embed\/|mega\.nz\/embed|sendvid\.com\/embed|ok\.ru\/videoembed/i.test(url))
+    .map((url) => normalizePlayerUrl(url))
+    .filter((url) => url && VALID_EMBED_URL_PATTERN.test(url))
     .map((url) => `<iframe src="${url}" allowfullscreen></iframe>`);
 }
 
@@ -225,8 +246,9 @@ function cleanEmbed(value) {
 
   if (iframeMatch) {
     html = iframeMatch[0];
+    html = html.replace(/\s*\/>(\s*<\/iframe>)/gi, ">$1");
     html = html.replace(/src=(["'])(.*?)\1\s+(width|height)=/i, "src=$1$2$1 $3=");
-    html = html.replace(/src=(["'])([^"']*?)\s+(width|height)=\1?[^"'\s>]*/i, "src=$1$2$1 $3=\"\"");
+    html = html.replace(/src=(["'])([^"']*?)\s+(width|height)=\1?[^"'\s>]*/i, 'src=$1$2$1 $3=""');
   } else {
     if (videoMatch) {
       html = videoMatch[0];
@@ -247,6 +269,15 @@ function cleanEmbed(value) {
     .trim();
 
   html = html.replace(/src=(["'])\/\//i, "src=$1https://");
+  html = html.replace(/src=(["'])([^"']+)\1/i, (_full, quote, rawSrc) => {
+    const normalized = normalizePlayerUrl(rawSrc);
+    return normalized ? `src=${quote}${normalized}${quote}` : `src=${quote}${quote}`;
+  });
+
+  const srcCheck = html.match(/\ssrc=["']([^"']*)["']/i);
+  if (!srcCheck || !/^https?:\/\//i.test(srcCheck[1])) {
+    return "";
+  }
 
   if (/^<video\b/i.test(html)) {
     html = ensureAttribute(html, "video", "controls", "");
@@ -364,6 +395,7 @@ function resolveImage(value) {
 
   for (const candidate of candidates) {
     const url = decodeWpGarbage(candidate);
+    if (/dragonballhdsinlimites\.net\/wp-content\/uploads\//i.test(url)) continue;
     if (/^https?:\/\//i.test(url) && isImagePath(url)) return url;
   }
 
@@ -449,7 +481,7 @@ function episodeNumber(titulo) {
 }
 
 function sortCapitulos(items) {
-  const sagaOrder = { db: 1, z: 2, gt: 3, kai: 4, super: 5, peliculas: 6 };
+  const sagaOrder = { db: 1, z: 2, gt: 3, kai: 4, super: 5, heroes: 6, peliculas: 7 };
   return [...items].sort((a, b) => {
     const sagaDiff = (sagaOrder[a.saga] || 99) - (sagaOrder[b.saga] || 99);
     if (sagaDiff) return sagaDiff;
@@ -517,12 +549,13 @@ function migrate() {
 
   const capitulos = records
     .map((record, index) => {
-      const titulo = pick(record, ["titulo", "title", "post_title", "Título"]);
+      const rawTitulo = pick(record, ["titulo", "title", "post_title", "Título"]);
+      const titulo = rawTitulo.replace(/\s+/g, " ").trim();
       const id = pick(record, ["id"]);
       const rawSlug = pick(record, ["slug", "post_name"]);
       const isCorrupted = !rawSlug || /c028543|[\{\}]/i.test(rawSlug);
       const slug = isCorrupted
-        ? slugify(titulo || `capitulo-${index + 1}`)
+        ? slugify(rawTitulo || `capitulo-${index + 1}`)
         : slugify(rawSlug);
       const legacy = legacyById.get(id) || (rawSlug ? legacyBySlug.get(rawSlug) : undefined) || legacyBySlug.get(slug) || {};
       const sourceCategory = pick(record, ["categorias", "categorías"]) || legacy.categoria;
@@ -556,8 +589,8 @@ function migrate() {
         });
 
       const players = collectPlayers(record);
-      const seoTitle = pick(record, ["rankmathtitle", "aioseotitle"]);
-      const seoDescription = pick(record, ["rankmathdescription", "aioseodescription"]);
+      const seoTitle = decodeWpGarbage(pick(record, ["rankmathtitle", "aioseotitle"]));
+      const seoDescription = decodeWpGarbage(pick(record, ["rankmathdescription", "aioseodescription"]));
       const links = extractLinks(collectValues(record, ["linkurl"]).join(" "));
       const canonicalUrl = `/capitulo/${slug}/`;
       const rawAliases = [];
@@ -570,14 +603,14 @@ function migrate() {
       addUniquePath(rawAliases, id ? `/archivos/${id}/feed/` : "");
       addUniquePath(rawAliases, pathFromUrl(pick(record, ["blogger_permalink", "bloggerpermalink"])));
       addUniquePath(rawAliases, pick(record, ["wpoldslug"]) ? `/${pick(record, ["wpoldslug"])}/` : "");
-      if (rawSlug && rawSlug !== slug) {
+      if (rawSlug && rawSlug !== slug && !isCorrupted) {
         addUniquePath(rawAliases, `/${rawSlug}/`);
         addUniquePath(rawAliases, `/${rawSlug}/feed/`);
         addUniquePath(rawAliases, `/${category.categoriaSlug}/${rawSlug}/`);
       }
 
-      // Strictly exclude canonical URL from aliases to eliminate route collision hazard
-      const aliases = rawAliases.filter((alias) => alias !== canonicalUrl);
+      // Strictly exclude canonical URL and any corrupted WP hashes from aliases
+      const aliases = rawAliases.filter((alias) => alias !== canonicalUrl && !/c028543|[\{\}%]/i.test(alias));
 
       return {
         id,
@@ -599,6 +632,55 @@ function migrate() {
       };
     })
     .filter((capitulo) => capitulo.titulo && capitulo.slug);
+
+  const FALLBACK_IMAGES_BY_ID = {
+    "8952": "/uploads/2023/03/kai32.jpg",
+    "8941": "/uploads/2023/03/kai43.jpg",
+    "8892": "/uploads/2023/03/kai92.jpg",
+    "8826": "/uploads/2023/03/kai158.jpg",
+    "12827": "/uploads/2022/08/dragonballz271.jpg",
+    "4250": "/uploads/2023/03/db2.jpg",
+    "4464": "/uploads/2023/03/db67.jpg",
+    "4509": "/uploads/2023/03/db82.jpg",
+    "8503": "/uploads/2023/03/dbh7.jpg",
+    "8497": "/uploads/2023/03/dbh13.jpg",
+    "370": "/uploads/2022/08/dragonballz159.jpg",
+    "8671": "/uploads/2023/03/dbs14.jpg",
+    "6780": "/uploads/2023/03/dbs14.jpg",
+    "8635": "/uploads/2023/03/dbs50.jpg",
+    "6672": "/uploads/2023/03/dbs50.jpg",
+    "8634": "/uploads/2023/03/dbs53.jpg",
+    "6669": "/uploads/2023/03/dbs53.jpg",
+    "8630": "/uploads/2023/03/dbs55.jpg",
+    "6657": "/uploads/2023/03/dbs55.jpg",
+    "8582": "/uploads/2023/03/dbs103.jpg",
+    "6513": "/uploads/2023/03/dbs103.jpg",
+    "8886": "/uploads/2023/03/kai98.jpg",
+    "12975": "/uploads/2024/02/dragon-ball-z-s-best-characters.avif",
+    "12981": "/uploads/2024/02/dragon-ball-z-s-best-characters.avif",
+  };
+
+  const PARALLEL_PLAYER_DONORS = {
+    "12827": "264",
+    "8582": "6513",
+  };
+
+  const capituloById = new Map(capitulos.map((c) => [c.id, c]));
+  for (const capitulo of capitulos) {
+    if (!capitulo.imagen && FALLBACK_IMAGES_BY_ID[capitulo.id]) {
+      const candidate = FALLBACK_IMAGES_BY_ID[capitulo.id];
+      if (fs.existsSync(path.join(ROOT, "public", candidate.replace(/^\/+/, "")))) {
+        capitulo.imagen = candidate;
+      }
+    }
+    if (!capitulo.players.length && PARALLEL_PLAYER_DONORS[capitulo.id]) {
+      const donor = capituloById.get(PARALLEL_PLAYER_DONORS[capitulo.id]);
+      if (donor && donor.players.length) {
+        capitulo.players = donor.players.map((p) => ({ ...p }));
+        capitulo.iframe = donor.iframe;
+      }
+    }
+  }
 
   const sortedCapitulos = sortCapitulos(capitulos);
   const legacyPages = [];

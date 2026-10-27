@@ -25,7 +25,7 @@ const redirects = [];
 for (const [destination, paths] of groups) {
   let chunk = [];
   const flush = () => {
-    if (chunk.length) redirects.push({ source: '/:legacy(' + chunk.join('|') + ')/', destination, statusCode: 301 });
+    if (chunk.length) redirects.push({ source: '/:legacy((?:' + chunk.join('|') + ')/?)', destination, statusCode: 301 });
     chunk = [];
   };
   for (const path of paths) {
@@ -42,6 +42,6 @@ base.redirects = [...redirects, ...categories, ...base.redirects];
 if (base.redirects.length > 2048) throw new Error('Vercel redirect limit exceeded');
 fs.writeFileSync('vercel.json', JSON.stringify(base, null, 2) + '\n');
 fs.writeFileSync('data/redirect-map.json', JSON.stringify(Object.fromEntries(aliases)) + '\n');
-const index = chapters.filter(chapter => chapter.players?.length).map(({ slug, titulo, imagen, categoria, saga }) => ({ slug, titulo, imagen, categoria, saga }));
+const index = chapters.filter(chapter => chapter.players?.length).map(({ slug, titulo, imagen, categoria, categoriaSlug, saga, numero }) => ({ slug, titulo, imagen, categoria, categoriaSlug, saga, numero }));
 fs.writeFileSync('public/search-index.json', JSON.stringify(index) + '\n');
 console.log(`Prepared ${aliases.size} historical redirects in ${redirects.length} rules; ${conflicts} conflicting aliases resolved by exact-slug precedence.`);

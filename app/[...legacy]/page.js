@@ -62,7 +62,7 @@ export async function generateMetadata({ params }) {
     const title = getCategoryTitle(category);
     const description = getCategoryDescription(category);
     return {
-      title,
+      title: { absolute: title },
       description,
       alternates: {
         canonical: canonicalPath,

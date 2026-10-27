@@ -71,6 +71,11 @@ async function main() {
     }
   }
 
+  const nestedDuplicateDir = path.join(OUTPUT_ROOT, "optimized");
+  if (fs.existsSync(nestedDuplicateDir)) {
+    fs.rmSync(nestedDuplicateDir, { recursive: true, force: true });
+  }
+
   fs.writeFileSync(DATA_PATH, `${JSON.stringify(capitulos, null, 2)}\n`, "utf8");
   console.log(`Imagenes optimizadas nuevas: ${generated}`);
   console.log(`Imagenes optimizadas reutilizadas: ${reused}`);

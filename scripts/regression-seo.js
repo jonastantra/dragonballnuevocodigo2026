@@ -26,9 +26,18 @@ for (const [source, destination] of Object.entries(redirects)) {
   const match = rules.find(r => r.re.test(source));
   assert.equal(match?.destination, destination, source);
   assert.equal(match?.statusCode, 301);
+  const noSlash = source.length > 1 && source.endsWith('/') ? source.slice(0, -1) : source;
+  const matchNoSlash = rules.find(r => r.re.test(noSlash));
+  assert.equal(matchNoSlash?.destination, destination, noSlash);
   assert(exists(destination), destination);
   checked++;
 }
+const rawCapitulos = JSON.stringify(chapters);
+assert(!rawCapitulos.includes('c028543'), 'No corrupted WP placeholder hashes');
+assert(!rawCapitulos.includes('waaw.to/embed/'), 'No broken waaw.to/embed/ 404 URLs');
+assert(!rawCapitulos.includes('pokemonlaserielatino.xyz'), 'No expired pokemonlaserielatino mirror URLs');
+assert(!rawCapitulos.includes('src="AQUI"'), 'No placeholder AQUI iframe embeds');
+assert(chapters.every(c => Boolean(c.imagen) && exists(c.imagen)), 'All 1070 episodes have an existing local image');
 assert(!rules.some(r => r.re.test('/search-index.json')));
 assert(!rules.some(r => r.re.test('/no-existe-prueba-pancho-2026/')));
 for (const c of chapters) {

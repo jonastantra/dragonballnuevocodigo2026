@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
     : `${siteUrl}/og-image.webp`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     robots: { index: Boolean(capitulo.players?.length), follow: true },
     alternates: {
