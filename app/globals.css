@@ -97,3 +97,9 @@ body { background: radial-gradient(ellipse at 80% 0%, #172744 0%, transparent 45
 .site-hero > * { position: relative; z-index: 1; }
 @media (max-width: 639px) { .site-hero-title { font-size: clamp(2rem, 8vw, 3rem); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Collapse empty AdSense slots, including leftover iframe wrappers. */
+ins.adsbygoogle[data-ad-status="unfilled"],
+.google-auto-placed ins.adsbygoogle[style*="width: 0px"][style*="height: 0px"] {
+  display: none !important;
+}
