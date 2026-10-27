@@ -5,6 +5,7 @@ const repoName = "dragonballnuevocodigo2026";
 
 const nextConfig = {
   output: "export",
+  outputFileTracingRoot: __dirname,
   trailingSlash: true,
   poweredByHeader: false,
   assetPrefix: isGitHubPages && !isCustomDomain ? `/${repoName}/` : undefined,

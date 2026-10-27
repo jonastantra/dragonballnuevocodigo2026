@@ -1,6 +1,8 @@
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
+const { pathToRegexp } = require("next/dist/compiled/path-to-regexp");
+const redirectRules = require("../vercel.json").redirects.map(rule => { const keys = []; return { ...rule, keys, regex: pathToRegexp(rule.source, keys) }; });
 
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "out");
@@ -37,13 +39,13 @@ function resolveRequest(url) {
   if (pathname.endsWith("/")) pathname += "index.html";
 
   const direct = path.resolve(OUT_DIR, pathname.replace(/^\/+/, ""));
-  if (direct.startsWith(OUT_DIR) && fs.existsSync(direct) && fs.statSync(direct).isFile()) {
+  if (direct.startsWith(OUT_DIR + path.sep) && fs.existsSync(direct) && fs.statSync(direct).isFile()) {
     return direct;
   }
 
   const asDirectory = path.resolve(OUT_DIR, pathname.replace(/^\/+/, ""), "index.html");
   if (
-    asDirectory.startsWith(OUT_DIR) &&
+    asDirectory.startsWith(OUT_DIR + path.sep) &&
     fs.existsSync(asDirectory) &&
     fs.statSync(asDirectory).isFile()
   ) {
@@ -54,6 +56,15 @@ function resolveRequest(url) {
 }
 
 const server = http.createServer((req, res) => {
+  const requested = new URL(req.url, `http://localhost:${PORT}`);
+  for (const rule of redirectRules) {
+    const match = rule.regex.exec(safeDecode(requested.pathname));
+    if (!match) continue;
+    let destination = rule.destination;
+    rule.keys.forEach((key, i) => { destination = destination.replace(new RegExp(':' + key.name + '[*?]?', 'g'), match[i + 1] || ''); });
+    res.writeHead(rule.statusCode || 308, { location: destination + requested.search });
+    res.end(); return;
+  }
   const filePath = resolveRequest(req.url);
   const ext = path.extname(filePath).toLowerCase();
   const statusCode = path.basename(filePath) === "404.html" ? 404 : 200;
@@ -67,12 +78,12 @@ const server = http.createServer((req, res) => {
 
     res.writeHead(statusCode, {
       "content-type": types[ext] || "application/octet-stream",
-      "cache-control": ext === ".html" ? "no-store" : "public, max-age=31536000, immutable",
+      "cache-control": filePath.includes(`${path.sep}_next${path.sep}static${path.sep}`) ? "public, max-age=31536000, immutable" : "no-cache",
     });
-    res.end(content);
+    res.end(req.method === "HEAD" ? undefined : content);
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "127.0.0.1", () => {
   console.log(`Static preview: http://localhost:${PORT}`);
 });

@@ -26,9 +26,10 @@ const path = require("path");
 
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "out");
-const CANONICAL_DOMAIN = "https://dragonballhdsinlimites.net";
+const CANONICAL_DOMAIN = "https://www.dragonballhdsinlimites.net";
 
 const CANONICAL_CATEGORIES = [
+  "/category/dragon-ball-heroes/",
   "/category/dragon-ball-super-latino/",
   "/category/dragon-ball-super-sub/",
   "/category/dragon-ball-z/",
@@ -447,9 +448,9 @@ function runTier1() {
       // Check count of episode URLs in sitemap
       const epCountInSitemap = (sitemapXml.match(new RegExp(`<loc>${CANONICAL_DOMAIN}/capitulo/`, "g")) || []).length;
       assert(
-        epCountInSitemap === 1070,
-        `sitemap.xml must contain all 1,070 canonical /capitulo/ episode URLs (Found: ${epCountInSitemap})`,
-        { expected: 1070, actual: epCountInSitemap }
+        epCountInSitemap === capitulos.filter(c => c.players?.length).length,
+        `sitemap.xml must contain only playable canonical /capitulo/ episode URLs (Found: ${epCountInSitemap})`,
+        { expected: capitulos.filter(c => c.players?.length).length, actual: epCountInSitemap }
       );
     }
 
@@ -572,7 +573,7 @@ function runTier2() {
       const disallowsWpJson = robotsTxt.includes("/wp-json/") || robotsTxt.includes("wp-json");
 
       assert(disallowsBuscar, "robots.txt must disallow /buscar/", { actual: robotsTxt });
-      assert(disallowsQuery, "robots.txt must disallow query parameters (/*?*)", { actual: robotsTxt });
+      assert(!disallowsQuery, "robots.txt must allow Google to crawl query URLs and see canonical/noindex", { actual: robotsTxt });
       assert(disallowsWpJson, "robots.txt must disallow legacy WordPress endpoints (/wp-json/, /xmlrpc.php)", { actual: robotsTxt });
     }
   }
@@ -713,7 +714,7 @@ function runTier3() {
       const videoObj = schemas.find((s) => s["@type"] === "VideoObject" || (Array.isArray(s["@graph"]) && s["@graph"].some((g) => g["@type"] === "VideoObject")));
       const actualVideo = videoObj && videoObj["@type"] === "VideoObject" ? videoObj : (videoObj?.["@graph"]?.find((g) => g["@type"] === "VideoObject"));
 
-      assert(actualVideo !== undefined, `Episode [${item.saga}] must contain VideoObject schema`, { file: epHtmlPath });
+      assert(item.sample.uploadDate ? actualVideo !== undefined : actualVideo === undefined, `Episode [${item.saga}] emits VideoObject only with verified uploadDate`, { file: epHtmlPath });
       if (actualVideo) {
         assert(typeof actualVideo.name === "string" && actualVideo.name.length > 0, "VideoObject.name must be non-empty string");
         assert(typeof actualVideo.description === "string" && actualVideo.description.length > 0, "VideoObject.description must be non-empty string");

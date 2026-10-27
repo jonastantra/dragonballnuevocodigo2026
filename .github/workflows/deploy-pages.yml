@@ -29,13 +29,16 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Build static site
         run: npm run build
         env:
           GITHUB_PAGES: "true"
           CUSTOM_DOMAIN: "true"
+
+      - name: Verify SEO and historical redirects
+        run: npm test
 
       - name: Prepare Pages artifact
         run: touch out/.nojekyll

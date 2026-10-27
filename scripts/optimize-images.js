@@ -17,7 +17,7 @@ function localPublicPath(urlPath) {
 }
 
 function optimizedUrl(urlPath) {
-  const clean = String(urlPath).split("?")[0].split("#")[0].replace(/^\/+/, "");
+  const clean = String(urlPath).split("?")[0].split("#")[0].replace(/^\/+/, "").replace(/^(?:optimized\/)+/, "");
   return `/optimized/${clean.replace(/\.(jpe?g|png|webp)$/i, ".webp")}`;
 }
 

@@ -13,7 +13,7 @@ export default function CategoryView({ category, capitulos }) {
 
       <section
         id="contenido"
-        className="border-b border-white/10 bg-[linear-gradient(135deg,#f46a20_0%,#456ea7_100%)] px-4 py-16 text-center sm:px-6 lg:px-8"
+        className="site-hero border-b border-white/10 px-4 py-16 text-center sm:px-6 lg:px-8"
       >
         <nav className="mx-auto mb-4 flex max-w-5xl justify-center text-sm font-bold text-white/80" aria-label="Breadcrumb">
           <a href="/" className="hover:text-white">Inicio</a>
@@ -23,11 +23,26 @@ export default function CategoryView({ category, capitulos }) {
           <span className="text-white">{category.shortTitle || category.title}</span>
         </nav>
         <h1 className="site-hero-title mx-auto max-w-5xl text-3xl font-black uppercase text-white sm:text-5xl lg:text-6xl">
-          {category.seoTitle || category.title}
+          {category.title}
         </h1>
         <p className="mx-auto mt-4 max-w-3xl text-base font-semibold text-white/95 sm:text-lg">
           {category.description}
         </p>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-black uppercase text-db-orange">
+              {capitulos.length} capítulos disponibles
+            </p>
+            <h2 className="mt-2 text-3xl font-black text-white">Catálogo de Episodios</h2>
+          </div>
+          <a className="focus-ring rounded-md border border-white/10 px-4 py-2 text-sm font-bold text-zinc-300 hover:text-white" href="/">
+            Volver al inicio
+          </a>
+        </div>
+        <CapituloGrid capitulos={capitulos} eagerCount={1} />
       </section>
 
       {editorial && (
@@ -39,7 +54,7 @@ export default function CategoryView({ category, capitulos }) {
                 <p className="mt-4 leading-8 text-zinc-300">{editorial.synopsis}</p>
                 {editorial.cast && (
                   <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-                    <h3 className="text-sm font-black uppercase text-db-orange">Elenco de Doblaje Latino</h3>
+                    <h3 className="text-sm font-black uppercase text-db-orange">Voces principales</h3>
                     <p className="mt-2 text-sm leading-6 text-zinc-300">{editorial.cast}</p>
                   </div>
                 )}
@@ -81,21 +96,6 @@ export default function CategoryView({ category, capitulos }) {
           </div>
         </section>
       )}
-
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-black uppercase text-db-orange">
-              {capitulos.length} capítulos disponibles
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-white">Catálogo de Episodios</h2>
-          </div>
-          <a className="focus-ring rounded-md border border-white/10 px-4 py-2 text-sm font-bold text-zinc-300 hover:text-white" href="/">
-            Volver al inicio
-          </a>
-        </div>
-        <CapituloGrid capitulos={capitulos} eagerCount={1} />
-      </section>
 
       <SiteFooter />
     </main>

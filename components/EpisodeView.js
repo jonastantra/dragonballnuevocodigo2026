@@ -1,7 +1,7 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import PlayerTabs from "@/components/PlayerTabs";
-import { episodeHref, getCategoryHref, getRelatedEpisodes } from "@/lib/site";
+import { episodeHref, getCategoryHref, getRelatedEpisodes, cleanSynopsis } from "@/lib/site";
 
 export default function EpisodeView({ capitulo, capitulos }) {
   const index = capitulos.findIndex((item) => item.slug === capitulo.slug);
@@ -51,7 +51,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
         <section className="mt-6 grid gap-4 lg:grid-cols-[1fr_0.72fr]">
           <div className="rounded-lg border border-white/10 bg-white/[0.04] p-5">
             <h2 className="text-2xl font-black text-white">Sinopsis del capitulo</h2>
-            <p className="mt-3 leading-8 text-zinc-300">{capitulo.descripcion}</p>
+            <p className="mt-3 leading-8 text-zinc-300">{cleanSynopsis(capitulo.descripcion)}</p>
           </div>
 
           <div className="rounded-lg border border-white/10 bg-white/[0.04] p-5">
@@ -72,7 +72,7 @@ export default function EpisodeView({ capitulo, capitulos }) {
               </div>
             ) : (
               <p className="mt-3 leading-8 text-zinc-400">
-                Las descargas externas disponibles se agregan automaticamente desde la migracion.
+                No hay enlaces de descarga disponibles para este capítulo.
               </p>
             )}
           </div>

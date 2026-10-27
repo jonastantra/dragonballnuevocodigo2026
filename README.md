@@ -35,3 +35,19 @@ npm run build
 ```
 
 El build ejecuta la migracion y exporta el sitio estatico en `out/`, listo para Vercel o hosting estatico.
+
+
+## Recuperación técnica — octubre 2026
+
+El dominio público actual es https://www.dragonballhdsinlimites.net/. La URL antigua de Vercel registrada en GitHub ya no existe.
+
+- `npm ci --include=dev` instala también las herramientas de compilación.
+- `npm run build` migra, optimiza, genera el índice compacto/redirecciones y exporta `out/`.
+- `npm test` comprueba SEO, enlaces internos, sitemap y redirecciones históricas.
+- `npm run preview -- 3137` muestra el sitio en `http://127.0.0.1:3137`, interpretando también las redirecciones de Vercel.
+
+`vercel.json` se genera desde `config/vercel-base.json` y los alias de migración. Debe quedar actualizado y versionado antes de subir: Vercel lee su configuración antes de ejecutar el build. GitHub Pages no interpreta redirecciones de Vercel.
+
+Las fichas sin reproductor se conservan con noindex; agregar un reproductor válido a la fuente y recompilar permite incluirlas de nuevo. No se deben inventar vistas, fechas de subida ni duraciones para conseguir resultados enriquecidos.
+
+Ver [diagnóstico comprobado](DIAGNOSTICO-2026-10-27.md).

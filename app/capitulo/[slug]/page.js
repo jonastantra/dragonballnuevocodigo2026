@@ -43,6 +43,7 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
+    robots: { index: Boolean(capitulo.players?.length), follow: true },
     alternates: {
       canonical: canonicalPath,
     },

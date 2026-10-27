@@ -1,13 +1,7 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { generateOrganizationSchema, generateWebSiteSchema, siteUrl } from "@/lib/site";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
@@ -29,9 +23,6 @@ export const metadata = {
     "anime online HD",
     "Dragon Ball sin censura",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "es_MX",
@@ -82,12 +73,12 @@ export default function RootLayout({ children }) {
   const organizationSchema = generateOrganizationSchema();
 
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="es">
       <head>
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
-      <body className={inter.className}>
+      <body>
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

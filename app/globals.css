@@ -83,3 +83,17 @@ img {
 .focus-ring:focus-visible {
   outline-color: var(--db-gold);
 }
+
+html { scroll-padding-top: 10rem; }
+body { background: radial-gradient(ellipse at 80% 0%, #172744 0%, transparent 45rem), #090c13; }
+.dragon-mark { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; color: #7c2300; background: linear-gradient(135deg, #ffd26b, #ff741b); box-shadow: 0 0 24px #ff6b1a25; font-size: 1.5rem; }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1rem; border-radius: .75rem; font-size: .875rem; font-weight: 800; }
+.primary-button { background: #ff981f; color: #171008; }
+.primary-button:hover { background: #ffb64d; }
+.secondary-button { border: 1px solid #ffffff26; background: #ffffff08; color: #f4f4f5; }
+.primary-button:focus-visible, .secondary-button:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; }
+.site-hero { position: relative; overflow: hidden; background: radial-gradient(ellipse at 85% 20%, #ff6b1a24, transparent 60%), linear-gradient(120deg, #111b2d, #090c13); }
+.site-hero::after { content: "★"; position: absolute; right: 5%; top: -2rem; color: #ff981f0b; font-size: 24rem; line-height: 1; pointer-events: none; }
+.site-hero > * { position: relative; z-index: 1; }
+@media (max-width: 639px) { .site-hero-title { font-size: clamp(2rem, 8vw, 3rem); } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }

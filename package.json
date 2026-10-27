@@ -6,24 +6,26 @@
     "migrar": "node migrar.js",
     "dev": "next dev",
     "optimize-images": "node scripts/optimize-images.js",
-    "build": "npm run migrar && npm run optimize-images && next build",
-    "test": "node scripts/e2e-seo-test.js",
+    "build": "npm run migrar && npm run optimize-images && node scripts/prepare-site.js && next build",
+    "test": "npm run test:seo && npm run test:regression",
     "preview": "node scripts/serve-static.js",
-    "start": "next start"
+    "start": "next start",
+    "test:seo": "node scripts/e2e-seo-test.js",
+    "test:regression": "node scripts/regression-seo.js"
   },
   "dependencies": {
-    "next": "^15.3.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "15.5.28",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.10",
-    "sharp": "^0.34.5",
+    "postcss": "^8.5.32",
+    "sharp": "0.35.5",
     "tailwindcss": "^3.4.17"
   },
   "overrides": {
-    "postcss": "^8.5.10"
+    "postcss": "^8.5.32"
   },
   "browserslist": {
     "production": [

@@ -11,7 +11,7 @@ import {
 export const dynamic = "force-static";
 
 export const metadata = {
-  title: "Ver Dragon Ball Online en Español Latino HD - Todas las Sagas Completas",
+  title: { absolute: "Dragon Ball en español latino | Sagas y capítulos HD" },
   description:
     "Disfruta de todos los capítulos completos de Dragon Ball, Dragon Ball Z, Dragon Ball Super, GT, Kai y películas online en audio latino y calidad HD sin límites.",
   alternates: {
@@ -44,6 +44,7 @@ export const metadata = {
 };
 
 const quickSections = [
+  { title: "Dragon Ball Heroes", href: "/category/dragon-ball-heroes/", match: (capitulo) => capitulo.saga === "heroes" },
   {
     title: "Dragon Ball Super Latino",
     href: "/category/dragon-ball-super-latino/",
@@ -82,10 +83,10 @@ const quickSections = [
 ];
 
 export default function HomePage() {
-  const total = capitulos.length;
-  const featured = capitulos.filter((capitulo) => capitulo.imagen).slice(0, 4);
+  const total = capitulos.filter((capitulo) => capitulo.players?.length).length;
+  const featured = capitulos.filter((capitulo) => capitulo.imagen && capitulo.players?.length).slice(0, 3);
   const sections = quickSections.map((section) => {
-    const matches = capitulos.filter(section.match);
+    const matches = capitulos.filter((capitulo) => capitulo.players?.length && section.match(capitulo));
     const cover = matches.find((capitulo) => capitulo.imagen)?.imagen || "";
     return { ...section, count: matches.length, cover };
   });
@@ -108,21 +109,64 @@ export default function HomePage() {
 
       <section
         id="contenido"
-        className="border-b border-white/10 bg-[linear-gradient(135deg,#f46a20_0%,#456ea7_100%)] px-4 py-20 text-center sm:px-6 lg:px-8"
+        className="site-hero border-b border-white/10 px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8"
       >
         <h1 className="site-hero-title mx-auto max-w-5xl text-4xl font-black uppercase text-white sm:text-6xl">
-          Ver Dragon Ball Online - Todos los Episodios
+          Todo el universo Dragon Ball, en un solo lugar
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold text-white/90">
-          Disfruta de todas las sagas: DB, DBZ, GT, Super, Kai y mas.
+          Elige tu saga y encuentra el siguiente capítulo: Dragon Ball, Z, GT, Kai y Super.
         </p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3"><a href="#sagas" className="primary-button">Explorar sagas</a><a href="/buscar/" className="secondary-button">Encontrar un capítulo</a></div>
+        <p className="mt-6 text-sm text-zinc-400">{total.toLocaleString("es-MX")} capítulos en el catálogo · Latino y subtitulado</p>
       </section>
 
+      <section id="sagas" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-black uppercase text-db-orange">Sagas y categorias</p>
+            <h2 className="mt-2 text-3xl font-black text-white">Elige tu saga</h2>
+          </div>
+          <a href="/buscar/" className="focus-ring rounded-md border border-white/10 px-4 py-2 font-bold">
+            Buscar episodio
+          </a>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {sections.map((section, index) => (
+            <a
+              key={section.href}
+              href={section.href}
+              className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 shadow-card transition hover:-translate-y-1 hover:border-db-orange"
+            >
+              <div className="aspect-video bg-zinc-950" style={{ aspectRatio: "16 / 9" }}>
+                {section.cover ? (
+                  <img
+                    src={section.cover}
+                    alt={section.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    loading={index < 2 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-[linear-gradient(135deg,#171717,#261207)] text-sm font-black uppercase text-db-orange">
+                    Dragon Ball
+                  </div>
+                )}
+              </div>
+              <div className="p-3">
+                <h3 className="line-clamp-2 text-base font-black text-white">{section.title}</h3>
+                <p className="mt-1 text-xs font-bold uppercase text-zinc-400">{section.count} capitulos</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-black uppercase text-db-orange">Episodios recientes</p>
-            <h2 className="mt-2 text-3xl font-black text-white">Acceso rapido</h2>
+            <p className="text-sm font-black uppercase text-db-orange">Capítulos destacados</p>
+            <h2 className="mt-2 text-3xl font-black text-white">Continúa la aventura</h2>
           </div>
           <a href="/buscar/" className="focus-ring rounded-md border border-white/10 px-4 py-2 font-bold">
             {total.toLocaleString("es-MX")} capitulos
@@ -161,47 +205,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="sagas" className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-black uppercase text-db-orange">Sagas y categorias</p>
-            <h2 className="mt-2 text-3xl font-black text-white">Explorar sin cargar todo</h2>
-          </div>
-          <a href="/buscar/" className="focus-ring rounded-md border border-white/10 px-4 py-2 font-bold">
-            Buscar episodio
-          </a>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {sections.map((section, index) => (
-            <a
-              key={section.href}
-              href={section.href}
-              className="group overflow-hidden rounded-lg border border-white/10 bg-db-panel2 shadow-card transition hover:-translate-y-1 hover:border-db-orange"
-            >
-              <div className="aspect-video bg-zinc-950" style={{ aspectRatio: "16 / 9" }}>
-                {section.cover ? (
-                  <img
-                    src={section.cover}
-                    alt={section.title}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    loading={index < 2 ? "eager" : "lazy"}
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    decoding="async"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center bg-[linear-gradient(135deg,#171717,#261207)] text-sm font-black uppercase text-db-orange">
-                    Dragon Ball
-                  </div>
-                )}
-              </div>
-              <div className="p-3">
-                <h3 className="line-clamp-2 text-base font-black text-white">{section.title}</h3>
-                <p className="mt-1 text-xs font-bold uppercase text-zinc-400">{section.count} capitulos</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
       <SiteFooter />
     </main>
   );

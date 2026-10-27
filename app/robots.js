@@ -1,4 +1,4 @@
-const siteUrl = "https://dragonballhdsinlimites.net";
+import { siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -9,7 +9,6 @@ export default function robots() {
       allow: "/",
       disallow: [
         "/buscar/",
-        "/*?*",
         "/wp-json/",
         "/xmlrpc.php",
         "/*/feed/",

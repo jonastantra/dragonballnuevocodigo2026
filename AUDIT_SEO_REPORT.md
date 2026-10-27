@@ -1,3 +1,5 @@
+> **Actualización 27-oct-2026:** este informe anterior contiene afirmaciones de penalización no demostradas. Consulta `DIAGNOSTICO-2026-10-27.md` para evidencias actuales, correcciones y límites de verificación.
+
 # Dragon Ball HD Sin Límites — Comprehensive Technical SEO & Indexing Audit Report
 
 ## 1. Executive Summary & Root Cause Analysis

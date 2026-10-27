@@ -145,18 +145,12 @@ function truncate(value, max) {
 }
 
 function cleanDescription(value, titulo, category, numero) {
-  const text = stripHtml(value);
+  const raw = stripHtml(value);
+  const text = /(?:I.m still learning|I (?:cannot|can.t) (?:help|assist)|as an AI|Do you need help with anything else)/i.test(raw) ? "" : raw;
   const saga = category?.categoria || "Dragon Ball";
   const num = numero && numero !== 9999 ? numero : null;
 
-  let base = text && text.length > 20 ? text : `Revive ${titulo} con la mejor calidad de imagen y sonido.`;
-  if (!base.endsWith(".") && !base.endsWith("!") && !base.endsWith("?")) base += ".";
-
-  const ep = num ? `Episodio ${num}` : "Capitulo";
-  const suffix = `${ep} de ${saga} disponible online en audio latino con reproductor HD optimizado para movil, tablet y escritorio en Dragon Ball HD Sin Limites.`;
-
-  const merged = `${base} ${suffix}`;
-  return truncate(merged, 500);
+  return text && text.length > 20 ? truncate(text, 500) : `${titulo}. Consulta las opciones de reproducción disponibles para este capítulo de ${saga}.`;
 }
 
 function extractLinks(html) {
@@ -409,6 +403,9 @@ function addUniquePath(list, value) {
 
 function inferCategory(titulo, legacyCategory = "") {
   const source = `${legacyCategory} ${titulo}`.toLowerCase();
+  if (/dragon ball\s+heroes|super dragon ball heroes/.test(source)) {
+    return { categoria: "Dragon Ball Heroes", categoriaSlug: "dragon-ball-heroes", saga: "heroes" };
+  }
 
   if (/dragon ball super.*sub|super sub|\bdbs sub\b/.test(source)) {
     return { categoria: "Dragon Ball Super Sub", categoriaSlug: "dragon-ball-super-sub", saga: "super" };

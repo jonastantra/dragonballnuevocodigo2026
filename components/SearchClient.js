@@ -1,7 +1,7 @@
 "use client";
 
-import capitulos from "@/data/capitulos.json";
-import { episodeHref } from "@/lib/site";
+
+const episodeHref = (episode) => `/capitulo/${episode.slug}/`;
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 
 const normalizar = (value) =>
@@ -18,11 +18,20 @@ function initialQuery() {
 const filtrosRapidos = ["Dragon Ball Super", "Dragon Ball Z", "Dragon Ball GT", "Dragon Ball Kai", "Latino"];
 
 export default function SearchClient() {
+  const [capitulos, setCapitulos] = useState([]);
+  const [loadError, setLoadError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
 
   useEffect(() => {
     setQuery(initialQuery());
+    const controller = new AbortController();
+    fetch("/search-index.json", { signal: controller.signal }).then((r) => {
+      if (!r.ok) throw new Error("Search unavailable");
+      return r.json();
+    }).then(setCapitulos).catch((e) => { if (e.name !== "AbortError") setLoadError(true); }).finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   const indice = useMemo(
@@ -31,17 +40,19 @@ export default function SearchClient() {
         ...capitulo,
         busqueda: normalizar(`${capitulo.titulo} ${capitulo.slug} ${capitulo.categoria || ""} ${capitulo.saga || ""}`),
       })),
-    []
+    [capitulos]
   );
 
   const resultados = useMemo(() => {
     const value = normalizar(deferredQuery.trim());
     if (!value) return [];
-    return indice.filter((capitulo) => capitulo.busqueda.includes(value)).slice(0, 80);
+    const words = value.split(/\s+/);
+    return indice.filter((capitulo) => words.every((word) => capitulo.busqueda.includes(word))).slice(0, 80);
   }, [deferredQuery, indice]);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <p role="status" className="mb-4 text-sm text-zinc-300">{loading ? "Cargando catálogo…" : loadError ? "No se pudo cargar el buscador. Puedes explorar las sagas desde el menú." : `${resultados.length} resultados${resultados.length === 80 ? " (se muestran los primeros 80)" : ""}`}</p>
       <label className="relative block">
         <span className="sr-only">Buscar capitulos</span>
         <input
@@ -74,12 +85,12 @@ export default function SearchClient() {
         <div className="mt-8 rounded-lg border border-white/10 bg-db-panel p-8 text-center">
           <p className="text-xl font-black text-white">Escribe para buscar en el catalogo.</p>
           <p className="mt-2 text-zinc-300">
-            La portada se mantiene ligera y el buscador carga resultados solo cuando lo necesitas.
+            Encuentra tu episodio por serie, número o personaje.
           </p>
         </div>
       )}
 
-      {query.trim() && resultados.length === 0 && (
+      {!loading && !loadError && query.trim() && resultados.length === 0 && (
         <div className="mt-8 rounded-lg border border-white/10 bg-db-panel p-8 text-center text-zinc-300">
           No encontre capitulos con esa busqueda.
         </div>

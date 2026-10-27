@@ -11,3 +11,5 @@ Entradas-Export-*.csv
 Simpson/
 .agents/
 .vercel
+
+/artifacts/

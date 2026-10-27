@@ -101,7 +101,7 @@ export async function generateMetadata({ params }) {
         description: utility.description || undefined,
         siteName: "Dragon Ball HD Sin Limites",
       },
-      robots: utility.path === "/blog/" ? { index: true, follow: true } : { index: false, follow: true },
+      robots: { index: false, follow: true },
     };
   }
 

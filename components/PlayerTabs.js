@@ -44,10 +44,12 @@ export default function PlayerTabs({ players, coverImage, title }) {
           </div>
         )}
 
-        <div
+        <button
+          type="button"
+          aria-label={`Reproducir ${title || "capítulo"}`}
           id="player-panel"
           onClick={() => setIsLoaded(true)}
-          className="relative aspect-video overflow-hidden rounded-lg bg-zinc-950 border border-white/5 cursor-pointer group shadow-2xl"
+          className="focus-ring block w-full text-left relative aspect-video overflow-hidden rounded-lg bg-zinc-950 border border-white/5 cursor-pointer group shadow-2xl"
           style={{ aspectRatio: "16 / 9" }}
         >
           {coverImage ? (
@@ -70,7 +72,7 @@ export default function PlayerTabs({ players, coverImage, title }) {
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center select-none">
             <div className="relative mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#ff6b1a] text-white shadow-[0_0_30px_rgba(255,107,26,0.6)] transition duration-300 group-hover:scale-110 group-hover:bg-[#ff853a] group-hover:shadow-[0_0_40px_rgba(255,107,26,0.8)]">
               {/* Círculo pulsante exterior */}
-              <div className="absolute inset-0 rounded-full border border-[#ff6b1a]/40 animate-ping opacity-75" />
+              <div className="absolute inset-0 rounded-full border border-[#ff6b1a]/40 opacity-75" />
               
               {/* Icono de Play */}
               <svg
@@ -83,19 +85,20 @@ export default function PlayerTabs({ players, coverImage, title }) {
               </svg>
             </div>
             
-            <h3 className="text-lg font-black uppercase tracking-wider text-white sm:text-2xl drop-shadow-md">
-              Reproducir Capitulo
-            </h3>
+            <span className="text-lg font-black uppercase tracking-wider text-white sm:text-2xl drop-shadow-md">
+              Reproducir capítulo
+            </span>
             {title && (
-              <p className="mt-1 max-w-md text-xs font-bold text-zinc-300 line-clamp-1 drop-shadow-sm sm:text-sm">
+              <span className="mt-1 max-w-md text-xs font-bold text-zinc-300 line-clamp-1 drop-shadow-sm sm:text-sm">
                 {title}
-              </p>
+              </span>
             )}
             <span className="mt-3 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-zinc-300 backdrop-blur-sm transition duration-300 group-hover:bg-[#ff6b1a]/20 group-hover:text-white">
               Cargar Reproductor
             </span>
           </div>
-        </div>
+        </button>
+        <p className="mt-3 text-sm text-zinc-400">Si una opción no funciona, prueba otro servidor disponible.</p>
       </div>
     );
   }
