@@ -1,0 +1,41 @@
+name: Publicar en VPS
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vps-dragonball
+  cancel-in-progress: false
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --include=dev
+      - run: npm run build
+      - run: npm test
+      - name: Preparar sitio
+        run: |
+          python3 scripts/generate-vps-redirects.py dragonball
+          mkdir -p /tmp/vps-package
+          cp -a out /tmp/vps-package/site
+          cp redirects.map /tmp/vps-package/
+          printf '%s\n' "$GITHUB_SHA" > /tmp/vps-package/commit
+          tar -czf /tmp/vps-release.tar.gz -C /tmp/vps-package .
+      - name: Enviar al servidor
+        env:
+          DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/vps_key"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          ssh -T -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20 -i "$HOME/.ssh/vps_key" root@187.124.237.212 < /tmp/vps-release.tar.gz
